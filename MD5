@@ -1,9 +1,9 @@
-831fd0cb2fb19f4036a205fc8f751ab8 *DESCRIPTION
+92b217ad39b60182c225cd2ed25e00a6 *DESCRIPTION
 ebee491c4217284b7d580f45f88c97cb *NAMESPACE
 4ab74e79eca4894a13ad069782b9e2c4 *R/RcppExports.R
 cd13e338ee4710b9d3ff6ff7d554afe6 *R/cut_attrs.R
 4130082bf6bb0230ceb07248daebe45b *R/discretize.R
-9ca807ac36e4591bbc30d3bc8d3a7247 *R/feature_search.R
+93cb1dad8e62ec10c8f08e07211aea3f *R/feature_search.R
 91964a77f96a99f676be1565ed041221 *R/information_gain.R
 73450f620fa779341e69d1596d1c293d *R/utils.R
 6cb6da4c4417ff7fe6902f3c5c51074d *build/vignette.rds
@@ -16,7 +16,7 @@ a3d6de721d24abeab6cdfc8c2a738daf *inst/benchmarks/bench-support.R
 96e33205fd16c7cd2aefb94cf4307214 *inst/benchmarks/bench-table.R
 a62f884340cead3174be611a98e0bee5 *inst/doc/benchmarks_discretize.R
 d4e49830d8307bcc02856d44146a6b12 *inst/doc/benchmarks_discretize.Rmd
-55f6dd233f504a25d213fd719c206ff5 *inst/doc/benchmarks_discretize.html
+63573575ad72d2eaa4631e8f95e2acc3 *inst/doc/benchmarks_discretize.html
 b37d6473d5e4bc5d512ffafc8fe6f098 *inst/doc/get_started.R
 7845c9a96125df773afc5b87600a4981 *inst/doc/get_started.Rmd
 66c58e4cd815033fb2378f40569595d5 *inst/doc/get_started.html
@@ -34,7 +34,7 @@ f63149da2e26257319f2b7dffe7e869a *inst/include/cutoff/cutOff.h
 96bee007f1415af3464691d502cba510 *inst/test.R
 531ea377be643b5dce623bd2bbb3a14e *man/cut_attrs.Rd
 c6b78ba0fc1e3aa3b6f0075aadc7998c *man/discretize.Rd
-b594e9ca79fe48b26fd692c945560e8c *man/feature_search.Rd
+fe6248e34a3f8848be710f692f0f6cfb *man/feature_search.Rd
 adc7481ed6908218f3414f595ede6e64 *man/information_gain.Rd
 d32d852f5ede0fe4e4418b714eb4c4ed *man/to_formula.Rd
 58084d6a8d1e2ccccc5d57ad21c72000 *src/Makevars
@@ -45,12 +45,12 @@ f3d6f9045f1c4aec700561c0b1984b5c *src/cutOff.cpp
 be13e58e66a1c4ecc79425e61f5ad73d *src/discretizeControl.cpp
 0d43d078239350348ba0f8abb804c5fd *src/discretizeControlR.h
 9b6a65948660f339e12654911fd52b8d *src/information_gain.cpp
-e521f315e2a1d6b8f1a8c4e0f2825e99 *src/init.c
+e2f9bb381056ee5177754fd6167c44cb *src/init.c
 d2a7432332a411c879b80c36894a6574 *src/support.cpp
 a0e78f6a1a2bcaa11ae3f916c6b28c5e *src/test-cpp.cpp
 c2cb0c30e10da611f9fbe56aea52f7a9 *src/test-runner.cpp
 3daaf353522f8ddcbe94a3733ac2c920 *tests/testthat.R
-fc1fab676851e08c8916df74e52d3617 *tests/testthat/test-cpp.R
+68f5f723eebe89554648e55e048cc9c1 *tests/testthat/test-cpp.R
 36d0493726a9216858656c584704f209 *tests/testthat/test-cutoff.R
 3724c2416072a4e75d90eca39683516c *tests/testthat/test-discretize.R
 31f88336dfbc16898a38dfb5139cadca *tests/testthat/test-information_gain.R
