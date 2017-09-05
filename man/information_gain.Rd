@@ -5,7 +5,7 @@
 \title{Entropy-based Filters}
 \usage{
 information_gain(formula, data, x, y, type = c("infogain", "gainratio",
-  "symuncert"), threads = 1)
+  "symuncert"), equal = FALSE, threads = 1)
 }
 \arguments{
 \item{formula}{An object of class \link{formula} with model description.}
@@ -18,6 +18,9 @@ information_gain(formula, data, x, y, type = c("infogain", "gainratio",
 
 \item{type}{Method name.}
 
+\item{equal}{A logical. Whether to discretize dependent variable with the
+\code{equal frequency binning discretization} or not.}
+
 \item{threads}{Number of threads for parallel backend.}
 }
 \value{
@@ -28,8 +31,7 @@ data.frame with the following columns:
 }
 }
 \description{
-Algorithms that find ranks of importance of discrete attributes, basing on their
-entropy with a continous class attribute. This function
+Algorithms that find ranks of importance of discrete attributes, basing on their entropy with a continous class attribute. This function
 is a reimplementation of \pkg{FSelector}'s \link[FSelector]{information.gain},
 \link[FSelector]{gain.ratio} and \link[FSelector]{symmetrical.uncertainty}.
 }

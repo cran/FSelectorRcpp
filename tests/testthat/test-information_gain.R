@@ -1,5 +1,3 @@
-# nocov start
-
 library(dplyr)
 library(FSelector)
 library(FSelectorRcpp)
@@ -36,7 +34,9 @@ test_that("Test character table", {
   data <- dt
 
   expect_lt(sum(information.gain(z ~ ., data)[, 1]
-                - information_gain(formula = z ~ .,data = data)$importance), 1e-10)
+                - information_gain(
+                      formula = z ~ ., data = data)$importance),
+            1e-10)
 })
 
 test_that("Sparse matrix - basics", {
@@ -45,28 +45,37 @@ test_that("Sparse matrix - basics", {
   mode(x) <- "integer"
   x <- Matrix(x, sparse = TRUE)
 
-  mode(iris$Sepal.Length) <- "integer"
-  mode(iris$Sepal.Width) <- "integer"
-  mode(iris$Petal.Length) <- "integer"
-  mode(iris$Petal.Width) <- "integer"
+  iris2 <- iris
+  mode(iris2$Sepal.Length) <- "integer"
+  mode(iris2$Sepal.Width) <- "integer"
+  mode(iris2$Petal.Length) <- "integer"
+  mode(iris2$Petal.Width) <- "integer"
 
   expect_equal(information_gain(x, species)$importance,
-               information_gain(formula = Species ~ ., data = iris)$importance)
+               information_gain(formula = Species ~ ., data = iris2)$importance)
 
   expect_equal(information_gain(x, species, type = "gainratio")$importance,
-               information_gain(formula = Species ~ ., data = iris,
+               information_gain(formula = Species ~ ., data = iris2,
                                 type = "gainratio")$importance)
 
   expect_equal(information_gain(x, species, type = "symuncert")$importance,
-               information_gain(formula = Species ~ ., data = iris,
+               information_gain(formula = Species ~ ., data = iris2,
                                 type = "symuncert")$importance)
+
+  # When there's no column names just indexes will be used
+  colnames(x) <- NULL
+  expect_equal(
+    information_gain(x, species, type = "symuncert")$attributes,
+    1:4
+  )
+
 })
 
 test_that("Removing NAs in formula (order)", {
   xx <- data_frame(x = as.character(c(1, 2, 3)), y = as.character(c(1, 2, 3)),
                    na = c(NA, NA, 1))
 
-  expect_equal(information_gain(xx[, "x", drop = FALSE], xx$y)$importance,
+  expect_equal(information_gain(xx[, "x"], xx$y)$importance,
                information_gain(y ~ x, xx)$importance)
 })
 
@@ -92,8 +101,8 @@ test_that("Interfaces errors", {
 
 })
 test_that("Incorrect interface parameter specification", {
-  irisX = iris[-5]
-  y = as.vector(iris$Species)
+  irisX <- iris[-5]
+  y <- as.vector(iris$Species)
   expect_error(information_gain(x = irisX))
   expect_error(information_gain(formula = Species ~ .))
   expect_error(information_gain(data = iris))
@@ -110,8 +119,10 @@ test_that("Incorrect interface parameter specification", {
   expect_error(information_gain(x = irisX, formula = Species ~ ., data = iris))
   expect_error(information_gain(y = y, x = irisX, formula = Species ~ .))
 
-  expect_error(information_gain(y = y, x = irisX, data = iris, formula = Species ~ .))
-
+  expect_error(information_gain(
+    y = y, x = irisX, data = iris,
+    formula = Species ~ .))
+  expect_error(information_gain(formula = x ~ 1, data = 1:10))
 
 })
 
@@ -123,4 +134,19 @@ test_that("Warning when y is numeric", {
   expect_warning(information_gain(dt, z))
 })
 
-# nocov end
+test_that("Compare interfaces - formula vs x,y", {
+
+  expect_equal(
+    information_gain(Species ~ ., iris),
+    information_gain(x = iris[, -5], y = iris$Species)
+  )
+
+})
+
+test_that("Equal bin discretization", {
+  fs <- information.gain(formula = Sepal.Length ~ ., data = iris)
+  fsrcpp <- information_gain(formula = Sepal.Length ~ ., data = iris,
+                             equal = TRUE)
+
+  expect_equal(fs$attr_importance, fsrcpp$importance)
+})

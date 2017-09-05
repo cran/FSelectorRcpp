@@ -6,7 +6,7 @@
 #'
 formula2names <- function(formula, data) {
   y <- formula[[2]]
-  x <- attr(stats::terms(formula, data = data), "term.labels")
+  x <- gsub("`", "", attr(stats::terms(formula, data = data), "term.labels"))
 
   list(y = as.character(y), x = x)
 }
@@ -80,7 +80,7 @@ get_children <- function(parent, direction = c("forward", "backward", "both"),
       m1 <- matrix(parent, ncol = cols, nrow = rows, byrow = TRUE)
       CurrRow <- 1
       CurrCol <- 1
-      while(CurrCol <= cols && CurrRow <= rows) {
+      while (CurrCol <= cols && CurrRow <= rows) {
         if (m1[CurrRow, CurrCol] == 0) {
           m1[CurrRow, CurrCol] <- 1
           CurrRow <- CurrRow + 1
@@ -96,7 +96,7 @@ get_children <- function(parent, direction = c("forward", "backward", "both"),
       m2 <- matrix(parent, ncol = cols, nrow = rows, byrow = TRUE)
       CurrRow <- 1
       CurrCol <- 1
-      while(CurrCol <= cols && CurrRow <= rows) {
+      while (CurrCol <= cols && CurrRow <= rows) {
         if (m2[CurrRow, CurrCol] == 1) {
           m2[CurrRow, CurrCol] <- 0
           CurrRow <- CurrRow + 1
@@ -113,9 +113,23 @@ get_children <- function(parent, direction = c("forward", "backward", "both"),
 
   if (!is.null(omit.func)) {
     RowToOmit <- apply(m, 1, omit.func)
-    return(m[!RowToOmit, , drop = FALSE])
+    return(m[!RowToOmit, , drop = FALSE]) #nolint
   } else {
     return(m)
+  }
+}
+
+#' Colnames from different calls
+#'
+#' Convenience function for extracting colnames
+#' @noRd
+#'
+get_colname <- function(dataCol) {
+  if (grepl(pattern = "^[[:digit:]]+$", x = dataCol[2])) {
+    fnc <- ifelse(exists(dataCol[1]), get, dynGet)
+    names(fnc(dataCol[1]))[as.integer(dataCol[2])]
+  } else {
+    dataCol[2]
   }
 }
 
@@ -131,12 +145,8 @@ call2names <- function(vecCall) {
     charCall
   } else if (charCall[1] == "$") {
     charCall[3]
-  } else if (grepl(pattern = "[[", x = charCall[1], fixed = TRUE)) {
-    if (grepl(pattern = "^[[:digit:]]*$", x = charCall[3])) {
-      names(get(charCall[2]))[as.integer(charCall[3])]
-    } else {
-      names(get(charCall[2]))[charCall[3]]
-    }
+  } else if (charCall[1] == "[[") {
+    get_colname(charCall[-1])
   } else {
     toSub <- charCall[-1]
     withBrackets <- grep(pattern = "[[", x = toSub, fixed = TRUE)
@@ -144,16 +154,10 @@ call2names <- function(vecCall) {
                                 x = toSub[withBrackets])
     toSub[withBrackets] <- strsplit(x = toSub[withBrackets], split = "[[",
                                     fixed = TRUE)
-    toSub[withBrackets] <- lapply(toSub[withBrackets], function(x) {
-      if (grepl(pattern = "^[[:digit:]]*$", x = x[2])) {
-        names(get(x[1]))[as.integer(x[2])]
-      } else {
-        names(get(x[1]))[x[2]]
-      }
-    })
+    toSub[withBrackets] <- lapply(toSub[withBrackets], get_colname)
     toSub[-withBrackets] <- gsub(pattern = ".*\\$", replacement = "",
                                  x = toSub[-withBrackets])
-    unlist(toSub)
+    gsub(pattern = "\"", replacement = "", x = unlist(toSub))
   }
 }
 

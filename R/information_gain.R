@@ -1,7 +1,6 @@
 #' Entropy-based Filters
 #'
-#' Algorithms that find ranks of importance of discrete attributes, basing on their
-#' entropy with a continous class attribute. This function
+#' Algorithms that find ranks of importance of discrete attributes, basing on their entropy with a continous class attribute. This function
 #' is a reimplementation of \pkg{FSelector}'s \link[FSelector]{information.gain},
 #' \link[FSelector]{gain.ratio} and \link[FSelector]{symmetrical.uncertainty}.
 #'
@@ -26,6 +25,8 @@
 #' @param x A \link{data.frame} or sparse matrix with attributes.
 #' @param y A vector with response variable.
 #' @param type Method name.
+#' @param equal A logical. Whether to discretize dependent variable with the
+#' \code{equal frequency binning discretization} or not.
 #' @param threads Number of threads for parallel backend.
 #'
 #' @return
@@ -64,14 +65,17 @@
 #' @importFrom Rcpp evalCpp
 #' @importFrom stats na.omit
 #' @importFrom stats complete.cases
-#' @useDynLib FSelectorRcpp
+#' @useDynLib FSelectorRcpp, .registration = TRUE
 #' @rdname information_gain
 #' @export
 #'
 information_gain <- function(formula, data, x, y,
                              type = c("infogain", "gainratio", "symuncert"),
+                             equal = FALSE,
                              threads = 1) {
-  if (!xor(all(!missing(x), !missing(y)), all(!missing(formula), !missing(data)))) {
+  if (!xor(
+          all(!missing(x), !missing(y)),
+          all(!missing(formula), !missing(data)))) {
     stop(paste("Please specify both `x = attributes, y = response`,",
                "XOR use both `formula = response ~ attributes, data = dataset"))
   }
@@ -85,16 +89,17 @@ information_gain <- function(formula, data, x, y,
       stop(paste("Please use `formula = response ~ attributes, data = dataset`",
                  "interface instead of `x = formula`."))
     }
-    return(.information_gain(x, y, type, threads))
+    return(.information_gain(x, y, type, equal, threads))
   }
 
   if (!missing(formula) && !missing(data)) {
-    return(.information_gain(formula, data, type, threads))
+    return(.information_gain(formula, data, type, equal, threads))
   }
 }
 
 .information_gain <- function(x, y,
                               type = c("infogain", "gainratio", "symuncert"),
+                              equal = FALSE,
                               threads = 1) {
   UseMethod(".information_gain", x)
 }
@@ -103,6 +108,7 @@ information_gain <- function(formula, data, x, y,
                                       type = c("infogain",
                                                "gainratio",
                                                "symuncert"),
+                                      equal = FALSE,
                                       threads = 1) {
   stop("Unsupported data type.")
 }
@@ -111,6 +117,7 @@ information_gain <- function(formula, data, x, y,
                                          type = c("infogain",
                                                   "gainratio",
                                                   "symuncert"),
+                                         equal = FALSE,
                                          threads = 1) {
   type <- match.arg(type)
 
@@ -118,14 +125,22 @@ information_gain <- function(formula, data, x, y,
     warning(paste("There are missing values in your data.",
                   "information_gain will remove them."))
     idx <- complete.cases(x, y)
-    x <- x[idx,]
+    x <- x[idx, , drop = FALSE]
     y <- y[idx]
   }
 
   if (is.numeric(y)) {
-    warning(paste("Dependent variable is a numeric! It will be converted",
-                  "to factor with simple factor(y). We do not discretize",
-                  "dependent variable in FSelectorRcpp by default!"))
+
+    if (!equal) {
+      warning(paste("Dependent variable is a numeric! It will be converted",
+                    "to factor with simple factor(y). We do not discretize",
+                    "dependent variable in FSelectorRcpp by default! You can",
+                    "choose equal frequency binning discretization by setting",
+                    "equal argument to TRUE."))
+    } else {
+      y <- equal_freq_bin(y, 5)
+    }
+
   }
 
   if (!is.factor(y)) {
@@ -136,13 +151,16 @@ information_gain <- function(formula, data, x, y,
   classEntropy <- fs_entropy1d(y)
 
   results <- information_type(classEntropy, values, type)
-  data.frame(attributes = colnames(x), importance = results, stringsAsFactors = FALSE)
+  data.frame(
+    attributes = colnames(x),
+    importance = results, stringsAsFactors = FALSE)
 }
 
 .information_gain.formula <- function(x, y,
                                       type = c("infogain",
                                                "gainratio",
                                                "symuncert"),
+                                      equal = FALSE,
                                       threads = 1) {
   if (!is.data.frame(y)) {
     stop("y must be a data.frame!")
@@ -151,35 +169,15 @@ information_gain <- function(formula, data, x, y,
   formula <- x
   data <- y
 
+  names_from_formula <- formula2names(formula, data)
+
+  x <- data[, names_from_formula$x, drop = FALSE]
+  y <- unname(unlist(data[, names_from_formula$y]))
+
   type <- match.arg(type)
 
-  formula <- formula2names(formula, data)
-  data <- data[c(formula$x, formula$y)]
-
-  if (anyNA(data)) {
-    warning(paste("There are missing values in your data.",
-                  "information_gain will remove them with na.omit()."))
-    data <- na.omit(data)
-  }
-
-  y <- data[[formula$y]]
-
-  if (is.numeric(y)) {
-    warning(paste("Dependent variable is a numeric! It will be converted",
-                  "to factor with simple factor(y). We do not discretize",
-                  "dependent variable in FSelectorRcpp by default!"))
-  }
-
-  if (!is.factor(y)) {
-    y <- factor(y)
-  }
-
-  values <- information_gain_cpp(data[formula$x], y, threads = threads)
-  classEntropy <- fs_entropy1d(y)
-
-  results <- information_type(classEntropy, values, type)
-
-  data.frame(attributes = formula$x ,importance = results, stringsAsFactors = FALSE)
+  .information_gain.data.frame(x = x, y = y, type = type, equal = equal,
+                               threads = threads)
 }
 
 
@@ -187,6 +185,7 @@ information_gain <- function(formula, data, x, y,
                                         type = c("infogain",
                                                  "gainratio",
                                                  "symuncert"),
+                                        equal = FALSE,
                                         threads = 1) {
   type <- match.arg(type)
 
@@ -196,7 +195,7 @@ information_gain <- function(formula, data, x, y,
   results <- information_type(classEntropy, values, type)
 
   attr <- colnames(x)
-  if(is.null(attr)) {
+  if (is.null(attr)) {
     attr <- 1:ncol(x)
   }
 
@@ -213,7 +212,7 @@ information_type <- function(classEntropy, values,
   if (type == "gainratio") {
     results <- results / attrEntropy
   } else if (type == "symuncert") {
-    results <- 2 * results / (attrEntropy	+ classEntropy)
+    results <- 2 * results / (attrEntropy + classEntropy)
   }
 
   results

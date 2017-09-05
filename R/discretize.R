@@ -75,11 +75,16 @@ discretize.formula <- function(x, y,
 
   if (all(!colClasses)) {
     stop("No columns of numeric classes!")
-  } else if (!all(colClasses)) {
-    warning(paste("Columns with classes other than numeric will be skipped!\n",
-                  "\n",
-                  " Skipped columns:",
-                  paste(names(colClasses)[!colClasses], collapse = ", ")))
+  } else if (any(!colClasses)) {
+
+    if (!all) {
+      warning(
+        paste("Columns with classes other than numeric will be skipped!\n",
+              "\n",
+              " Skipped columns:",
+              paste(names(colClasses)[!colClasses], collapse = ", "))
+      )
+    }
 
     colClasses <- colClasses[colClasses]
   }
@@ -89,17 +94,17 @@ discretize.formula <- function(x, y,
   for (col in columnsToDiscretize) {
     res <- discretize_cpp(data[[col]], yy, control)
 
-    if (!is.null(attr(res,"SplitValues"))) {
+    if (!is.null(attr(res, "SplitValues"))) {
       # ini case of no split points
       splitVals <- attr(res, "SplitValues")
-      levels(res) <- levels(cut(splitVals,splitVals))
+      levels(res) <- levels(cut(splitVals, splitVals))
     }
 
     data[[col]] <- res
   }
 
   if (!all) {
-    data <- data[, c(columnsToDiscretize, formula$y)]
+    data <- data[, c(formula$y, columnsToDiscretize)]
   }
 
   return(data)
@@ -117,7 +122,7 @@ discretize.data.frame <- function(x, y,
   if (any(table(colnames(y)) != 1)) {
     stop("Duplicated columns!")
   }
-  x <- formula(paste0(colnames(y)[1], "~."))
+  x <- formula(paste0(colnames(y)[1], "~.")) #nolint
 
   if (!("discretizationControl" %in% class(control))) {
     control <- control[[1]]
@@ -165,4 +170,41 @@ equalsizeControl <- function(k = 10) {
                              "discretizationControl",
                              "list")
   params
+}
+
+#' Discretize numeric dependent variable
+#'
+#' Returns discretized dependent variable
+#'
+#' The observations are segregated into bins in a way that every bin has the
+#' same number of them. This function is based on the original one from
+#' FSelector package.
+#'
+#' @noRd
+equal_freq_bin <- function(data, bins) {
+  bins <- as.integer(bins)
+
+  if (!is.numeric(data)) {
+    stop("Data must be numeric!")
+  }
+
+  if (bins < 1) {
+    stop("Number of bins must be greater than 1!")
+  }
+
+  complete <- complete.cases(data)
+  ord <- order(data)
+  len <- length(data[complete])
+  blen <- len/bins
+  new_data <- data
+  p1 <- 0
+  p2 <- 0
+
+  for (i in 1:bins) {
+    p1 <- p2 + 1
+    p2 <- round(i * blen)
+    new_data[ord[p1:min(p2, len)]] <- i
+  }
+
+  new_data
 }
