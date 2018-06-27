@@ -94,6 +94,11 @@ discretize.formula <- function(x, y,
   for (col in columnsToDiscretize) {
     res <- discretize_cpp(data[[col]], yy, control)
 
+    if (anyNA(data[[col]])) {
+      res[res == 0] <- NA
+    }
+    class(res) <- c("ordered", "factor")
+
     if (!is.null(attr(res, "SplitValues"))) {
       # ini case of no split points
       splitVals <- attr(res, "SplitValues")
@@ -195,7 +200,7 @@ equal_freq_bin <- function(data, bins) {
   complete <- complete.cases(data)
   ord <- order(data)
   len <- length(data[complete])
-  blen <- len/bins
+  blen <- len / bins
   new_data <- data
   p1 <- 0
   p2 <- 0
