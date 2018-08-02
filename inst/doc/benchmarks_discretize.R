@@ -1,5 +1,5 @@
 ## ---- echo=FALSE, message=TRUE-------------------------------------------
-is.pkg <- all(c("RTCGA.rnaseq", "microbenchmark") %in% rownames(installed.packages()))
+is.pkg <- all(c("RTCGA.rnaseq", "microbenchmark", "RWeka") %in% rownames(installed.packages()))
 if(!is.pkg) {
   message("Please install all suggested packages to run benchmark.")
 }
@@ -136,7 +136,7 @@ make_plot <- function(y) {
 bm_plot <- make_plot("time")
 bm_plot_log <- make_plot("log(time)")
 
-## ---- eval=is.pkg-----------------------------------------------------------------------------------------------------------------------------------
+## ----plots, eval=is.pkg-----------------------------------------------------------------------------------------------------------------------------
 bm_plot
 bm_plot_log
 

@@ -1,5 +1,4 @@
 library(dplyr)
-library(FSelector)
 library(FSelectorRcpp)
 
 iris_plus <- setNames(iris, gsub(
@@ -17,42 +16,46 @@ test_that("Data frame output", {
                   class = "data.frame")
 })
 
-test_that("Discretization - basic", {
-  dt <- lapply(1:5, function(xx) {
-    x <- rnorm(1000, mean = 10 * xx)
-    y <- rnorm(1000, mean = 0.5 * xx)
-    z <- 10 * xx + 0.5 * sqrt(xx)
-    data.frame(x, y, z)
+if (require("FSelector") && require("RWeka")) {
+  test_that("Discretization - basic", {
+    dt <- lapply(1:5, function(xx) {
+      x <- rnorm(1000, mean = 10 * xx)
+      y <- rnorm(1000, mean = 0.5 * xx)
+      z <- 10 * xx + 0.5 * sqrt(xx)
+      data.frame(x, y, z)
+    })
+
+    dt <- do.call(bind_rows, dt)
+
+    dt$z <- as.factor(as.integer(round(dt$z)))
+
+    weka <- as.numeric(RWeka::Discretize(z ~ x, dt)[, 1])
+    fs <- as.numeric(discretize(dt$x, dt$z)[[1]])
+
+    expect_equal(weka, fs)
+
+    weka <- RWeka::Discretize(z ~ x, dt)[, 1]
+    fs <- discretize(dt$x, dt$z)[[1]]
+    levels(weka)
+    levels(fs)
   })
 
-  dt <- do.call(bind_rows, dt)
 
-  dt$z <- as.factor(as.integer(round(dt$z)))
+  test_that("Discretization - single NA (independent variable)", {
+    iris$Sepal.Length[3] <- NA
 
-  weka <- as.numeric(RWeka::Discretize(z ~ x, dt)[, 1])
-  fs <- as.numeric(discretize(dt$x, dt$z)[[1]])
+    Weka <- as.numeric(RWeka::Discretize(Species ~ Sepal.Length,
+                                         data = iris)[, 1])
+    Weka <- c(Weka[1:2], NA, tail(Weka, -2))
 
-  expect_equal(weka, fs)
+    fs <- as.numeric(FSelectorRcpp::discretize(
+      iris$Sepal.Length, iris$Species)[[2]])
 
-  weka <- RWeka::Discretize(z ~ x, dt)[, 1]
-  fs <- discretize(dt$x, dt$z)[[1]]
-  levels(weka)
-  levels(fs)
-})
+    expect_equal(Weka, fs)
+  })
+}
 
 
-test_that("Discretization - single NA (independent variable)", {
-  iris$Sepal.Length[3] <- NA
-
-  Weka <- as.numeric(RWeka::Discretize(Species ~ Sepal.Length,
-                                       data = iris)[, 1])
-  Weka <- c(Weka[1:2], NA, tail(Weka, -2))
-
-  fs <- as.numeric(FSelectorRcpp::discretize(
-          iris$Sepal.Length, iris$Species)[[2]])
-
-  expect_equal(Weka, fs)
-})
 
 test_that("Discretization - not supported data type - throw error.", {
   x <- "a"
@@ -60,19 +63,29 @@ test_that("Discretization - not supported data type - throw error.", {
   expect_error(discretize(x, y))
 })
 
+test_that("Discretization - formula works both ways.", {
+  expect_equal(discretize(Species ~ ., iris), discretize(iris, Species ~ .))
+})
+
 test_that("Discretization - formula returns data.frame.", {
   expect_s3_class(discretize(Species ~ ., iris), "data.frame")
 })
 
 test_that("Discretization - expect warning when there is non numeric column in
-          formula.", {
+          formula and all=FALSE.", {
   dt <- cbind(iris, b = "a")
-  expect_warning(discretize(Species ~ ., dt))
+  expect_warning(discretize(Species ~ ., dt, all = FALSE))
 })
 
 test_that("Discretization - not implemented for data.frame", {
   dt <- cbind(iris, b = "a")
   expect_error(discretize(dt))
+})
+
+test_that("Discretization - not supported method", {
+  expect_error(discretize(Species ~ ., iris, control = list(method = "test")))
+  control <- structure(list(method = "test"), class = "discretizationControl")
+  expect_error(discretize(Species ~ ., iris, control = control))
 })
 
 test_that("Discretization - equalsize - ordered.", {
@@ -161,7 +174,7 @@ test_that("Interfaces", {
   expect_equal(
     colnames(discretize(list(iris$Sepal.Length, iris[[2]],
                              iris[["Petal.Length"]]), iris$Species)),
-    colnames(discretize(Species ~ . - Petal.Width, iris))
+    colnames(discretize(Species ~ . - Petal.Width, iris, all = FALSE))
   )
 
   expect_equal(
@@ -169,4 +182,27 @@ test_that("Interfaces", {
                              iris_plus[["Petal+Length"]]), iris_plus$Species)),
     c("Species", "Sepal+Length", "Sepal+Width", "Petal+Length")
   )
+
+  expect_s3_class(discretize(iris[-5], iris$Species), "data.frame")
+})
+
+test_that("Custom breaks", {
+  breaks <- c(0, 2, 4, 6, 8, 20, Inf)
+  disc <- discretize(iris, Species ~ Sepal.Length, customBreaksControl(breaks))
+
+  cc <- cut(iris$Sepal.Length, breaks = breaks, ordered_result = TRUE)
+  expect_true(all(disc$Sepal.Length == cc))
+
+  expect_error(customBreaksControl(c("A")))
+})
+
+test_that("Throw error for duplicated columns", {
+  x <- iris
+  colnames(x)[1:2] <- "X"
+  expect_error(discretize(Species ~ ., x))
+  expect_error(discretize(iris, iris$Species))
+})
+
+test_that("Throw an error when there's no numeric columns", {
+  expect_error(discretize(discretize(Species ~ ., iris), Species ~ .))
 })

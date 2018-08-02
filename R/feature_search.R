@@ -53,11 +53,12 @@ greedy_search <- function(attributes, fun, data,
   isForward <- type == "forward"
   best <- list(result = -Inf, attrs = rep(as.numeric(!isForward), len))
 
+  allResults <- NULL
+
   if (!isForward) {
     best$result <- fun(attributes[as.logical(best$attrs)], data)
+    allResults <- rbind(allResults, c(best$attrs, best$result))
   }
-
-  allResults <- NULL
 
   repeat {
     children <- get_children(best$attrs, type)
@@ -173,6 +174,7 @@ greedy_search <- function(attributes, fun, data,
 #'   return(mean(results))
 #' }
 #'
+#' set.seed(123)
 #' # Default greedy search.
 #' system.time(
 #'   feature_search(attributes = names(iris)[-5],
@@ -244,6 +246,8 @@ feature_search <- function(attributes, fun, data,
                            type = c("forward", "backward"),
                            sizes = 1:length(attributes), parallel = TRUE,
                            ...) {
+
+  stopifnot(length(attributes) > 0)
 
   call <- match.call()
   mode <- match.arg(mode)
