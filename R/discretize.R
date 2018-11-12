@@ -10,6 +10,9 @@
 #'   discretization algorithm. Possible inputs are \code{mdlControl} or \code{equalsizeControl}, so far. If passed as a list, the first element is used.
 #' @param all Logical indicating if a returned \link{data.frame} should contain other features that were not discretized.
 #' (Example: should \code{Sepal.Width} be returned, when you pass \code{iris} and discretize \code{Sepal.Length, Petal.Length, Petal.Width}.)
+#' @param discIntegers logical value.
+#' If true (default), then integers are treated as numeric vectors and they are discretized.
+#' If false integers are treated as factors and they are left as is.
 #' @param call Keep as \code{NULL}. Inner method parameter for consistency.
 #'
 #' @references U. M. Fayyad and K. B. Irani. Multi-Interval Discretization of
@@ -58,21 +61,22 @@
 #' @importFrom stats formula
 #' @export
 discretize <- function(x, y, control = list(mdlControl(), equalsizeControl()),
-                       all = TRUE, call = NULL) {
+                       all = TRUE, discIntegers = TRUE, call = NULL) {
   UseMethod("discretize", x)
 }
 
 #' @export
 discretize.default <- function(x, y,
-                               control = list(mdlControl(), equalsizeControl()),
-                               all = TRUE, call = NULL) {
+  control = list(mdlControl(), equalsizeControl()),
+  all = TRUE, discIntegers = TRUE, call = NULL) {
+
   stop(sprintf("Object of class %s is not supported!", class(x)[1]))
 }
 
 #' @export
 discretize.formula <- function(x, y,
                                control = list(mdlControl(), equalsizeControl()),
-                               all = TRUE, call = NULL) {
+                               all = TRUE, discIntegers = TRUE, call = NULL) {
   formula <- formula2names(x, y)
   data <- y
   yy <- y[[formula$y]]
@@ -88,11 +92,22 @@ discretize.formula <- function(x, y,
     }
   }
 
-  colClasses <- sapply(data, is.numeric)
+  fnc <- if (discIntegers) is.numeric else is.double
+  colClasses <- sapply(data, fnc)
   colClasses <- colClasses[formula$x]
 
   if (all(!colClasses)) {
-    stop("No columns of numeric classes!")
+    if (discIntegers) {
+      stop(
+        "There are no columns that contain the numeric values."
+      )
+    } else {
+      stop(
+        "There are no columns that contain the double values.\n",
+        "Note that discIntegers is set to FALSE, so all columns ",
+        "that contain the integers are not discretized."
+        )
+    }
   } else if (any(!colClasses)) {
 
     if (!all) {
@@ -114,7 +129,10 @@ discretize.formula <- function(x, y,
   for (col in columnsToDiscretize) {
 
     if (class(control)[1] == "customBreaksControl") {
-      res <- cut(data[[col]], control$breaks, ordered_result = TRUE)
+
+      signifDigits <- get_signif_digits(control$breaks)
+      res <- cut(data[[col]], control$breaks,
+                 ordered_result = TRUE, dig.lab = signifDigits)
       attr(res, "SplitValues") <- control$breaks
 
     } else {
@@ -127,13 +145,16 @@ discretize.formula <- function(x, y,
     class(res) <- c("ordered", "factor")
 
     if (!is.null(attr(res, "SplitValues"))) {
-      # in case of no split points
 
       splitVals <- attr(res, "SplitValues")
-      levels(res) <- levels(cut(splitVals, splitVals))
+      signifDigits <- get_signif_digits(splitVals)
+      levels(res) <- levels(cut(
+        splitVals, splitVals,
+        dig.lab = signifDigits, ordered_result = TRUE))
 
       splitPointsList[[col]] <- splitVals
     } else {
+      # in case of no split points
       warning(paste(
         sprintf("Cannot find any split points for `%s`.", col),
         "Drops this column.",
@@ -160,12 +181,13 @@ discretize.formula <- function(x, y,
 
 #' @export
 discretize.data.frame <- function(x, y,
-                                  control = list(mdlControl(),
-                                                 equalsizeControl()),
-                                  all = TRUE, call = match.call()) {
+  control = list(mdlControl(), equalsizeControl()),
+  all = TRUE, discIntegers = TRUE, call = match.call()) {
 
   if (class(y)[[1]] == "formula") {
-    discretize.formula(x = y, y = x, control = control, all = all)
+    discretize.formula(
+      x = y, y = x, control = control, all = all,
+      call = call, discIntegers = discIntegers)
   } else {
     if (!is.data.frame(y)) {
       y <- format_handler(call$y, y)
@@ -180,13 +202,16 @@ discretize.data.frame <- function(x, y,
       control <- control[[1]]
     }
 
-    discretize.formula(x = x, y = y, control = control, all = all)
+    discretize.formula(
+      x = x, y = y, control = control,
+      all = all, discIntegers = discIntegers,
+      call = call)
   }
 }
 #' @export
 discretize.numeric <- function(x, y,
-                               control = list(mdlControl(), equalsizeControl()),
-                               all = TRUE, call = NULL) {
+  control = list(mdlControl(), equalsizeControl()),
+  all = TRUE, discIntegers = TRUE, call = NULL) {
   call <- match.call()
   x <- format_handler(call$x, x)
 
@@ -194,8 +219,10 @@ discretize.numeric <- function(x, y,
     control <- control[[1]]
   }
 
-  discretize.data.frame(x = x, y = y, control = control,
-                        all = all, call = call)
+  discretize.data.frame(
+    x = x, y = y, control = control,
+    all = all, call = call,
+    discIntegers = discIntegers)
 }
 
 #' @export
@@ -272,4 +299,19 @@ equal_freq_bin <- function(data, bins) {
   }
 
   new_data
+}
+
+
+get_signif_digits <- function(x) {
+  x <- x[!is.infinite(x)]
+  before_dot <- max(nchar(format(round(x), scientific = FALSE)))
+
+  charx <- format(x, scientific = FALSE, digits = before_dot + 7)
+  charx <- charx[grep(x, pattern = "\\.")]
+  after_dot <- vapply(
+    strsplit(charx, split = "\\."), "", FUN = "[[", 2)
+  after_dot <- nchar(after_dot)
+  if (length(after_dot) == 0) after_dot <- 0
+
+  before_dot + min(pmax(after_dot, 0), 6)
 }

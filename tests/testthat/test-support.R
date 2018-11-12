@@ -77,9 +77,12 @@ test_that("Test order levels", {
   xChar <- c("C", "A", "A", "B")
   xFac <- factor(xChar, levels = c("A", "B", "C"), ordered = TRUE)
 
-  expect_equal(FSelectorRcpp:::fs_entropy1d(xNum), entropy(table(xNum)))
-  expect_equal(FSelectorRcpp:::fs_entropy1d(xChar), entropy(table(xChar)))
-  expect_equal(FSelectorRcpp:::fs_entropy1d(xFac), entropy(table(xFac)))
+  expect_equal(FSelectorRcpp:::fs_entropy1d(xNum),
+               entropy::entropy(table(xNum)))
+  expect_equal(FSelectorRcpp:::fs_entropy1d(xChar),
+               entropy::entropy(table(xChar)))
+  expect_equal(FSelectorRcpp:::fs_entropy1d(xFac),
+               entropy::entropy(table(xFac)))
 
   expect_error(FSelectorRcpp:::fs_entropy1d(list()))
 })
@@ -95,4 +98,18 @@ test_that("Formula test", {
   fm2 <- Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width
 
   expect_equal(fm, fm2)
+})
+
+test_that("get_signif_digits", {
+
+  expect_equal(FSelectorRcpp:::get_signif_digits(0), 1)
+  expect_equal(FSelectorRcpp:::get_signif_digits(123), 3)
+  expect_equal(FSelectorRcpp:::get_signif_digits(12.234), 5)
+  expect_equal(FSelectorRcpp:::get_signif_digits(1e7), 8)
+  expect_equal(FSelectorRcpp:::get_signif_digits(1e7 + 0.1), 9)
+
+  # round to max 6 places after .
+  expect_equal(FSelectorRcpp:::get_signif_digits(1e7 + 0.123456), 8 + 6)
+  expect_equal(FSelectorRcpp:::get_signif_digits(1e7 + 0.1234567), 8 + 6)
+
 })

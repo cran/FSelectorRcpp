@@ -1,5 +1,4 @@
 ## ----setup, include = FALSE-------------------------------------------------------------------------------------------------------------------------
-htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 library(knitr)
 opts_chunk$set(
     comment = "",
