@@ -1,4 +1,4 @@
-888f05acbad88bc391b1e6c7931c5925 *DESCRIPTION
+9e75a689f36b5066e914a47c797da213 *DESCRIPTION
 074fded9cf1b0eb58ce62bf958df3728 *NAMESPACE
 8f90801886c5c51cd31617cf01c41de3 *R/RcppExports.R
 24866ce8b5de27cd1b2b315f27736c8a *R/cut_attrs.R
@@ -7,7 +7,7 @@ eeea8d1c739c145e663b8777821ecf6f *R/discretize_transform.R
 c665d60a525db25818c76cafa7fd4149 *R/feature_search.R
 fee7ac1fc91b8f7b589a7c1cf83fd650 *R/information_gain.R
 430b1ef1d0adb804860b7026286d442e *R/utils.R
-95aec55ca22ee2f6dfb386c135953ba5 *build/vignette.rds
+0ea4ebe62c344158ea3ceb77305bccbe *build/vignette.rds
 6d5e8a250803f0b663de205813a60373 *inst/benchmarks/README.Rmd
 41a8fa73e1b658e030c9e374e9127208 *inst/benchmarks/bench-cutOff.R
 10cbec6673161507baf7d6a7869cbc4d *inst/benchmarks/bench-discretise.R
@@ -24,7 +24,7 @@ d3c2ea78ce78670a7fe5845831bca3f5 *inst/doc/get_started.Rmd
 b41afdcd994bcc1bc8d52636ed870950 *inst/doc/get_started.html
 ca9de27bdd2080529457b30723a4e229 *inst/doc/integer-variables.R
 3cf6b3a89d163aee190889ddb665ecbd *inst/doc/integer-variables.Rmd
-1527ceb868853c211f83296205f20bc3 *inst/doc/integer-variables.html
+8e8c7ceeb07a0a052d35a82d44112f17 *inst/doc/integer-variables.html
 111ff3bc52c9bffcbccfeb50ef781ac8 *inst/include/FSelector.h
 45dbc889ac0334f34bd460a85f7a91ce *inst/include/FSelectorConfig.h
 61da60730b0402f3c581371e8935ed76 *inst/include/cutoff/cutOff.h
@@ -42,8 +42,8 @@ f8faf34ab44807227d2a008a88f76494 *inst/include/support/table.h
 fed33d3e7864fd38146d14ba42b0b3e7 *man/feature_search.Rd
 5714ebe94e450296f24bddf9c68456f4 *man/information_gain.Rd
 5a56f5f60fa85018527a1f219484886a *man/to_formula.Rd
-d7c252e7013882999494ea4eaf651346 *src/Makevars
-d976b74087d269b11ebc900205017e74 *src/Makevars.win
+ca0e7b022fd7eb940f19f12a6a1e0c89 *src/Makevars
+ca0e7b022fd7eb940f19f12a6a1e0c89 *src/Makevars.win
 602b62c34fedbde67408e0bf3ce9bc02 *src/RcppExports.cpp
 2217c5dfed9d4b6d3472380c759b5bf0 *src/cutOff.cpp
 2473afdf82c7f7d7c1b54acf7b76a49f *src/discretize.cpp

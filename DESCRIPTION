@@ -2,7 +2,7 @@ Package: FSelectorRcpp
 Type: Package
 Title: 'Rcpp' Implementation of 'FSelector' Entropy-Based Feature
         Selection Algorithms with a Sparse Matrix Support
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(
  person("Zygmunt", "Zawadzki", role = c("aut", "cre"), email = "zygmunt@zstat.pl"),
  person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@gmail.com"),
@@ -29,11 +29,11 @@ BugReports: https://github.com/mi2-warsaw/FSelectorRcpp/issues
 URL: http://mi2-warsaw.github.io/FSelectorRcpp/
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2018-11-12 20:04:18 UTC; zzawadz
+Packaged: 2019-04-22 07:37:42 UTC; zzawadz
 Author: Zygmunt Zawadzki [aut, cre],
   Marcin Kosinski [aut],
   Krzysztof Slomczynski [ctb],
   Damian Skrzypiec [ctb]
 Maintainer: Zygmunt Zawadzki <zygmunt@zstat.pl>
 Repository: CRAN
-Date/Publication: 2018-11-12 20:40:02 UTC
+Date/Publication: 2019-04-22 11:40:08 UTC
