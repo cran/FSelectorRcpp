@@ -1,4 +1,4 @@
-## ---- echo=FALSE, message=TRUE, results='asis'---------------------------
+## ---- echo=FALSE, message=TRUE, results='asis'--------------------------------
 is.pkg <- all(c("RTCGA.rnaseq", "microbenchmark", "RWeka") %in% rownames(installed.packages()))
 if(!is.pkg) {
   message("Please install all suggested packages to run benchmark.")

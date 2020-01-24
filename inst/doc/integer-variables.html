@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <meta name="author" content="Zygmunt Zawadzki" />
 
-<meta name="date" content="2019-04-22" />
+<meta name="date" content="2020-01-22" />
 
 <title>Integer variables.</title>
 
 
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
+<style type="text/css" data-origin="pandoc">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; position: absolute; }
@@ -83,7 +83,29 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
 </style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -271,6 +293,9 @@ code > span.al { color: #ff0000; font-weight: bold; }
 code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
+
+
+
 </head>
 
 <body>
@@ -279,8 +304,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">Integer variables.</h1>
-<h4 class="author"><em>Zygmunt Zawadzki</em></h4>
-<h4 class="date"><em>2019-04-22</em></h4>
+<h4 class="author">Zygmunt Zawadzki</h4>
+<h4 class="date">2020-01-22</h4>
 
 
 
@@ -362,20 +387,25 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb3-27" data-line-number="27">  <span class="dt">y =</span> <span class="kw">rnorm</span>(<span class="dv">20</span>),</a>
 <a class="sourceLine" id="cb3-28" data-line-number="28">  <span class="dt">z =</span> <span class="kw">as.integer</span>(<span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>,<span class="dv">10</span>), <span class="kw">rep</span>(<span class="dv">2</span>, <span class="dv">10</span>)))</a>
 <a class="sourceLine" id="cb3-29" data-line-number="29">)</a>
-<a class="sourceLine" id="cb3-30" data-line-number="30"></a>
-<a class="sourceLine" id="cb3-31" data-line-number="31"><span class="kw">glimpse</span>(dt)</a>
-<a class="sourceLine" id="cb3-32" data-line-number="32"><span class="co">#&gt; Observations: 20</span></a>
-<a class="sourceLine" id="cb3-33" data-line-number="33"><span class="co">#&gt; Variables: 3</span></a>
-<a class="sourceLine" id="cb3-34" data-line-number="34"><span class="co">#&gt; $ x &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1...</span></a>
-<a class="sourceLine" id="cb3-35" data-line-number="35"><span class="co">#&gt; $ y &lt;dbl&gt; -0.56047565, -0.23017749, 1.55870831, 0.07050839, 0.12928774...</span></a>
-<a class="sourceLine" id="cb3-36" data-line-number="36"><span class="co">#&gt; $ z &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2</span></a>
-<a class="sourceLine" id="cb3-37" data-line-number="37"><span class="kw">glimpse</span>(dt <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate_if</span>(can_discretize, as.numeric))</a>
-<a class="sourceLine" id="cb3-38" data-line-number="38"><span class="co">#&gt; Observations: 20</span></a>
-<a class="sourceLine" id="cb3-39" data-line-number="39"><span class="co">#&gt; Variables: 3</span></a>
-<a class="sourceLine" id="cb3-40" data-line-number="40"><span class="co">#&gt; $ x &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1...</span></a>
-<a class="sourceLine" id="cb3-41" data-line-number="41"><span class="co">#&gt; $ y &lt;dbl&gt; -0.56047565, -0.23017749, 1.55870831, 0.07050839, 0.12928774...</span></a>
-<a class="sourceLine" id="cb3-42" data-line-number="42"><span class="co">#&gt; $ z &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2</span></a></code></pre></div>
+<a class="sourceLine" id="cb3-30" data-line-number="30"><span class="co">#&gt; Warning: `data_frame()` is deprecated, use `tibble()`.</span></a>
+<a class="sourceLine" id="cb3-31" data-line-number="31"><span class="co">#&gt; This warning is displayed once per session.</span></a>
+<a class="sourceLine" id="cb3-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb3-33" data-line-number="33"><span class="kw">glimpse</span>(dt)</a>
+<a class="sourceLine" id="cb3-34" data-line-number="34"><span class="co">#&gt; Observations: 20</span></a>
+<a class="sourceLine" id="cb3-35" data-line-number="35"><span class="co">#&gt; Variables: 3</span></a>
+<a class="sourceLine" id="cb3-36" data-line-number="36"><span class="co">#&gt; $ x &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20</span></a>
+<a class="sourceLine" id="cb3-37" data-line-number="37"><span class="co">#&gt; $ y &lt;dbl&gt; -0.56047565, -0.23017749, 1.55870831, 0.07050839, 0.12928774, 1.71506499, 0.46091621, -1.26506123, -0.68685285, -0.44566197, 1.22408180, …</span></a>
+<a class="sourceLine" id="cb3-38" data-line-number="38"><span class="co">#&gt; $ z &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2</span></a>
+<a class="sourceLine" id="cb3-39" data-line-number="39"><span class="kw">glimpse</span>(dt <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate_if</span>(can_discretize, as.numeric))</a>
+<a class="sourceLine" id="cb3-40" data-line-number="40"><span class="co">#&gt; Observations: 20</span></a>
+<a class="sourceLine" id="cb3-41" data-line-number="41"><span class="co">#&gt; Variables: 3</span></a>
+<a class="sourceLine" id="cb3-42" data-line-number="42"><span class="co">#&gt; $ x &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20</span></a>
+<a class="sourceLine" id="cb3-43" data-line-number="43"><span class="co">#&gt; $ y &lt;dbl&gt; -0.56047565, -0.23017749, 1.55870831, 0.07050839, 0.12928774, 1.71506499, 0.46091621, -1.26506123, -0.68685285, -0.44566197, 1.22408180, …</span></a>
+<a class="sourceLine" id="cb3-44" data-line-number="44"><span class="co">#&gt; $ z &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2</span></a></code></pre></div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

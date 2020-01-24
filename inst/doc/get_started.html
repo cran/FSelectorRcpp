@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -17,7 +17,7 @@
 
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
+<style type="text/css" data-origin="pandoc">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; position: absolute; }
@@ -81,7 +81,29 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
 </style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -277,6 +299,9 @@ margin: 0 auto;
 }
 </style>
 
+
+
+
 </head>
 
 <body>
@@ -285,7 +310,7 @@ margin: 0 auto;
 
 
 <h1 class="title toc-ignore">Motivation, Installation and Quick Workflow</h1>
-<h3 class="subtitle"><em><small> <a href="http://r-addict.com/About.html">Marcin Kosinski</a>   <a href="https://stackoverflow.com/users/3857701"><i class="fa fa-stack-overflow"></i></a>  <a href="http://r-addict.com"><i class="fa fa-comment"></i></a>  <a href="https://github.com/MarcinKosinski"><i class="fa fa-github"></i></a>  <a href="mailto:m.p.kosinski@gmail.com"><i class="fa fa-envelope-o"></i></a> <br> <a href="http://www.zstat.pl/">Zygmunt Zawadzki</a>   <a href="http://www.zstat.pl/"><i class="fa fa-comment"></i></a>  <a href="https://github.com/zzawadz"><i class="fa fa-github"></i></a>  <a href="mailto:zygmunt@zstat.pl"><i class="fa fa-envelope-o"></i></a></small><br></em></h3>
+<h3 class="subtitle"><small> <a href="http://r-addict.com/About.html">Marcin Kosinski</a>   <a href="https://stackoverflow.com/users/3857701"><i class="fa fa-stack-overflow"></i></a>  <a href="http://r-addict.com"><i class="fa fa-comment"></i></a>  <a href="https://github.com/MarcinKosinski"><i class="fa fa-github"></i></a>  <a href="mailto:m.p.kosinski@gmail.com"><i class="fa fa-envelope-o"></i></a> <br> <a href="http://www.zstat.pl/">Zygmunt Zawadzki</a>   <a href="http://www.zstat.pl/"><i class="fa fa-comment"></i></a>  <a href="https://github.com/zzawadz"><i class="fa fa-github"></i></a>  <a href="mailto:zygmunt@zstat.pl"><i class="fa fa-envelope-o"></i></a></small><br></h3>
 
 
 <div id="TOC">
@@ -322,21 +347,20 @@ margin: 0 auto;
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">information_gain</span>(               <span class="co"># Calculate the score for each attribute</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">    <span class="dt">formula =</span> Species <span class="op">~</span><span class="st"> </span>.,      <span class="co"># that is on the right side of the formula.</span></a>
 <a class="sourceLine" id="cb3-3" data-line-number="3">    <span class="dt">data =</span> iris,                <span class="co"># Attributes must exist in the passed data.</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">    <span class="dt">type  =</span> <span class="st">&quot;infogain&quot;</span>,         <span class="co"># Choose the type of a score to be calculated.</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">    <span class="dt">threads =</span> <span class="dv">2</span>                 <span class="co"># Set number of threads in a parallel backend.</span></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">  ) <span class="op">%&gt;%</span><span class="st">                          </span></a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="st">  </span><span class="kw">cut_attrs</span>(                    <span class="co"># Then take attributes with the highest rank.</span></a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">    <span class="dt">k =</span> <span class="dv">2</span>                       <span class="co"># For example: 2 attrs with the higehst rank.</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9">  ) <span class="op">%&gt;%</span><span class="st">                         </span></a>
-<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="st">  </span><span class="kw">to_formula</span>(                   <span class="co"># Create a new formula object with </span></a>
-<a class="sourceLine" id="cb3-11" data-line-number="11">    <span class="dt">attrs =</span> .,                  <span class="co"># the most influencial attrs.</span></a>
-<a class="sourceLine" id="cb3-12" data-line-number="12">    <span class="dt">class =</span> <span class="st">&quot;Species&quot;</span>           </a>
-<a class="sourceLine" id="cb3-13" data-line-number="13">  ) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="st">  </span><span class="kw">glm</span>(</a>
-<a class="sourceLine" id="cb3-15" data-line-number="15">    <span class="dt">formula =</span> .,                <span class="co"># Use that formula in any classification algorithm.</span></a>
-<a class="sourceLine" id="cb3-16" data-line-number="16">    <span class="dt">data =</span> iris,                </a>
-<a class="sourceLine" id="cb3-17" data-line-number="17">    <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>         </a>
-<a class="sourceLine" id="cb3-18" data-line-number="18">  )</a></code></pre></div>
+<a class="sourceLine" id="cb3-4" data-line-number="4">    <span class="dt">type  =</span> <span class="st">&quot;infogain&quot;</span>          <span class="co"># Choose the type of a score to be calculated.</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">  ) <span class="op">%&gt;%</span><span class="st">                          </span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="st">  </span><span class="kw">cut_attrs</span>(                    <span class="co"># Then take attributes with the highest rank.</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">    <span class="dt">k =</span> <span class="dv">2</span>                       <span class="co"># For example: 2 attrs with the higehst rank.</span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">  ) <span class="op">%&gt;%</span><span class="st">                         </span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="st">  </span><span class="kw">to_formula</span>(                   <span class="co"># Create a new formula object with </span></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">    <span class="dt">attrs =</span> .,                  <span class="co"># the most influencial attrs.</span></a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">    <span class="dt">class =</span> <span class="st">&quot;Species&quot;</span>           </a>
+<a class="sourceLine" id="cb3-12" data-line-number="12">  ) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="st">  </span><span class="kw">glm</span>(</a>
+<a class="sourceLine" id="cb3-14" data-line-number="14">    <span class="dt">formula =</span> .,                <span class="co"># Use that formula in any classification algorithm.</span></a>
+<a class="sourceLine" id="cb3-15" data-line-number="15">    <span class="dt">data =</span> iris,                </a>
+<a class="sourceLine" id="cb3-16" data-line-number="16">    <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>         </a>
+<a class="sourceLine" id="cb3-17" data-line-number="17">  )</a></code></pre></div>
 <pre><code>
 Call:  glm(formula = ., family = &quot;binomial&quot;, data = iris)
 
@@ -435,6 +459,9 @@ Residual Deviance: 5.17e-09     AIC: 6</code></pre>
 </div>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
