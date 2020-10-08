@@ -15,25 +15,25 @@ vignette: >
 ---
 
 ```{r, echo=FALSE, message=TRUE, results='asis'}
-is.pkg <- all(c("RTCGA.rnaseq", "microbenchmark", "RWeka") %in% rownames(installed.packages()))
+is.pkg <- all(c("RTCGA.rnaseq", "microbenchmark", "RWeka", "pkgdown") %in% rownames(installed.packages()))
 if(!is.pkg) {
   message("Please install all suggested packages to run benchmark.")
 }
 
-if(!pkgdown::in_pkgdown()) {
+if(is.pkg && !pkgdown::in_pkgdown()) {
   is.pkg <- FALSE
   cat("### Benchmark is not available here",
   "(we don't want to run this code on the CRAN server).",
   "Please visit the ",
     paste(sep = "", 
-        "http://mi2-warsaw.github.io/FSelectorRcpp/",
+        "https://mi2-warsaw.github.io/FSelectorRcpp/",
         "articles/benchmarks_discretize.html")
   )
 }
 
 ```
 
-```{r setup, include = FALSE}
+```{r setup, eval=is.pkg, include = FALSE}
 library(knitr)
 
 fig.path <- if(pkgdown::in_pkgdown()) {
@@ -77,14 +77,14 @@ Even though many categorization algorithms have been developed [@Holte1993, @Cha
 
 ## About The Cancer Genome Atlas
 
-> The Cancer Genome Atlas (TCGA) is a comprehensive and coordinated effort to accelerate our understanding of the molecular basis of cancer through the application of genome analysis technologies, including large-scale genome sequencing - [http://cancergenome.nih.gov/](http://cancergenome.nih.gov/). 
+> The Cancer Genome Atlas (TCGA) is a comprehensive and coordinated effort to accelerate our understanding of the molecular basis of cancer through the application of genome analysis technologies, including large-scale genome sequencing - [https://cancergenome.nih.gov/](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga). 
 
 [RTCGA team](https://github.com/orgs/RTCGA/people) converted selected datasets from this study into few separate packages that are hosted on Bioconductor. These R packages make selected datasets easier to access and manage. Data sets in RTCGA packages are large and cover complex relations between clinical outcomes and genetic background.
 
-To use RTCGA install package with instructions from it's [Bioconductor home page](https://www.bioconductor.org/packages/RTCGA/)
+To use RTCGA install package with instructions from it's [Bioconductor home page](https://bioconductor.org/packages/release/bioc/html/RTCGA.html)
 
 ```{r, eval = FALSE}
-## try http:// if https:// URLs are not supported
+## try https:// if https:// URLs are not supported
 source("https://bioconductor.org/biocLite.R")
 biocLite("RTCGA")
 ```
@@ -111,7 +111,7 @@ names(BRCA.rnaseq) <- gsub(pattern = "[[:punct:]]", replacement = "_",
 ## More
 
 - [RTCGA Quick Guide](http://r-addict.com/2016/05/04/RTCGA-Quick-Guide.html)
-- [RTCGA Website](http://rtcga.github.io/RTCGA/)
+- [RTCGA Website](https://rtcga.github.io/RTCGA/)
 
 # Discretization Benchmarks
 

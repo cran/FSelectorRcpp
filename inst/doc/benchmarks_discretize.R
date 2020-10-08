@@ -1,56 +1,56 @@
 ## ---- echo=FALSE, message=TRUE, results='asis'--------------------------------
-is.pkg <- all(c("RTCGA.rnaseq", "microbenchmark", "RWeka") %in% rownames(installed.packages()))
+is.pkg <- all(c("RTCGA.rnaseq", "microbenchmark", "RWeka", "pkgdown") %in% rownames(installed.packages()))
 if(!is.pkg) {
   message("Please install all suggested packages to run benchmark.")
 }
 
-if(!pkgdown::in_pkgdown()) {
+if(is.pkg && !pkgdown::in_pkgdown()) {
   is.pkg <- FALSE
   cat("### Benchmark is not available here",
   "(we don't want to run this code on the CRAN server).",
   "Please visit the ",
     paste(sep = "", 
-        "http://mi2-warsaw.github.io/FSelectorRcpp/",
+        "https://mi2-warsaw.github.io/FSelectorRcpp/",
         "articles/benchmarks_discretize.html")
   )
 }
 
 
-## ----setup, include = FALSE-------------------------------------------------------------------------------------------------------------------------
-library(knitr)
+## ----setup, eval=is.pkg, include = FALSE--------------------------------------
+#  library(knitr)
+#  
+#  fig.path <- if(pkgdown::in_pkgdown()) {
+#    "benchmarks_discretize_files/figure-html/"
+#  } else {
+#    "bench-figs/bench-"
+#  }
+#  
+#  opts_chunk$set(
+#      comment = "",
+#      fig.width = 8,
+#      fig.height = 8,
+#      message = FALSE,
+#      warning = FALSE,
+#      tidy.opts = list(
+#          keep.blank.line = TRUE,
+#          width.cutoff = 150
+#      ),
+#      options(width = 150),
+#      eval = TRUE,
+#      fig.path = fig.path
+#  )
 
-fig.path <- if(pkgdown::in_pkgdown()) {
-  "benchmarks_discretize_files/figure-html/"
-} else {
-  "bench-figs/bench-"
-}
-
-opts_chunk$set(
-    comment = "",
-    fig.width = 8, 
-    fig.height = 8,
-    message = FALSE,
-    warning = FALSE,
-    tidy.opts = list(
-        keep.blank.line = TRUE,
-        width.cutoff = 150
-    ),
-    options(width = 150),
-    eval = TRUE,
-    fig.path = fig.path
-)
-
-## ---- eval=is.pkg-----------------------------------------------------------------------------------------------------------------------------------
+## ---- eval=is.pkg-------------------------------------------------------------
 #  library(microbenchmark)
 #  library(FSelectorRcpp)
 #  library(RWeka)
 
-## ---- eval = FALSE----------------------------------------------------------------------------------------------------------------------------------
-#  ## try http:// if https:// URLs are not supported
+## ---- eval = FALSE------------------------------------------------------------
+#  ## try https:// if https:// URLs are not supported
 #  source("https://bioconductor.org/biocLite.R")
 #  biocLite("RTCGA")
 
-## ---- eval=is.pkg-----------------------------------------------------------------------------------------------------------------------------------
+## ---- eval=is.pkg-------------------------------------------------------------
 #  library(RTCGA.rnaseq)
 #  BRCA.rnaseq <- RTCGA.rnaseq::BRCA.rnaseq
 #  BRCA.rnaseq$bcr_patient_barcode <-
@@ -60,7 +60,7 @@ opts_chunk$set(
 #  names(BRCA.rnaseq) <- gsub(pattern = "[[:punct:]]", replacement = "_",
 #                             x = names(BRCA.rnaseq))
 
-## ---- eval=is.pkg-----------------------------------------------------------------------------------------------------------------------------------
+## ---- eval=is.pkg-------------------------------------------------------------
 #  library(ggplot2)
 #  library(pbapply)
 #  library(tibble)
@@ -156,7 +156,7 @@ opts_chunk$set(
 #  bm_plot <- make_plot("time")
 #  bm_plot_log <- make_plot("log(time)")
 
-## ----plots, eval=is.pkg, echo=FALSE-----------------------------------------------------------------------------------------------------------------
+## ----plots, eval=is.pkg, echo=FALSE-------------------------------------------
 #  bm_plot
 #  bm_plot_log
 

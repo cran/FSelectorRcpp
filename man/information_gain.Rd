@@ -12,6 +12,7 @@ information_gain(
   type = c("infogain", "gainratio", "symuncert"),
   equal = FALSE,
   discIntegers = TRUE,
+  nbins = 5,
   threads = 1
 )
 }
@@ -32,6 +33,8 @@ information_gain(
 \item{discIntegers}{logical value.
 If true (default), then integers are treated as numeric vectors and they are discretized.
 If false  integers are treated as factors and they are left as is.}
+
+\item{nbins}{Number of bins used for discretization. Only used if `equal = TRUE` and the response is numeric.}
 
 \item{threads}{defunct. Number of threads for parallel backend - now turned off because of safety reasons.}
 }
@@ -59,7 +62,7 @@ H(Attribute)}
 Attribute)}{H(Attribute) + H(Class)}}{2 * (H(Class) + H(Attribute) - H(Class,
 Attribute)) / (H(Attribute) + H(Class))}
 
-where H(X) is Shannon's Entropy for a variable X and H(X, Y) is a conditional
+where H(X) is Shannon's Entropy for a variable X and H(X, Y) is a joint
 Shannon's Entropy for a variable X with a condition to Y.
 }
 \examples{
