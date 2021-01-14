@@ -12,7 +12,7 @@
 
 <meta name="author" content="Zygmunt Zawadzki" />
 
-<meta name="date" content="2020-10-08" />
+<meta name="date" content="2021-01-14" />
 
 <title>Integer variables.</title>
 
@@ -32,6 +32,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -122,6 +131,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 })();
 </script>
+
 
 
 
@@ -319,7 +329,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Integer variables.</h1>
 <h4 class="author">Zygmunt Zawadzki</h4>
-<h4 class="date">2020-10-08</h4>
+<h4 class="date">2021-01-14</h4>
 
 
 
@@ -396,28 +406,24 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb3-22"><a href="#cb3-22"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
 <span id="cb3-23"><a href="#cb3-23"></a></span>
 <span id="cb3-24"><a href="#cb3-24"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb3-25"><a href="#cb3-25"></a>dt &lt;-<span class="st"> </span><span class="kw">data_frame</span>(</span>
+<span id="cb3-25"><a href="#cb3-25"></a>dt &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
 <span id="cb3-26"><a href="#cb3-26"></a>  <span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">20</span>,</span>
 <span id="cb3-27"><a href="#cb3-27"></a>  <span class="dt">y =</span> <span class="kw">rnorm</span>(<span class="dv">20</span>),</span>
 <span id="cb3-28"><a href="#cb3-28"></a>  <span class="dt">z =</span> <span class="kw">as.integer</span>(<span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>,<span class="dv">10</span>), <span class="kw">rep</span>(<span class="dv">2</span>, <span class="dv">10</span>)))</span>
 <span id="cb3-29"><a href="#cb3-29"></a>)</span>
-<span id="cb3-30"><a href="#cb3-30"></a><span class="co">#&gt; Warning: `data_frame()` is deprecated as of tibble 1.1.0.</span></span>
-<span id="cb3-31"><a href="#cb3-31"></a><span class="co">#&gt; Please use `tibble()` instead.</span></span>
-<span id="cb3-32"><a href="#cb3-32"></a><span class="co">#&gt; This warning is displayed once every 8 hours.</span></span>
-<span id="cb3-33"><a href="#cb3-33"></a><span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span></span>
-<span id="cb3-34"><a href="#cb3-34"></a></span>
-<span id="cb3-35"><a href="#cb3-35"></a><span class="kw">glimpse</span>(dt)</span>
-<span id="cb3-36"><a href="#cb3-36"></a><span class="co">#&gt; Rows: 20</span></span>
-<span id="cb3-37"><a href="#cb3-37"></a><span class="co">#&gt; Columns: 3</span></span>
-<span id="cb3-38"><a href="#cb3-38"></a><span class="co">#&gt; $ x &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20</span></span>
-<span id="cb3-39"><a href="#cb3-39"></a><span class="co">#&gt; $ y &lt;dbl&gt; -0.56047565, -0.23017749, 1.55870831, 0.07050839, 0.12928774, 1.71506499, 0.46091621, -1.26506123, -0.68685285, -0.44566197, 1.22408180, …</span></span>
-<span id="cb3-40"><a href="#cb3-40"></a><span class="co">#&gt; $ z &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2</span></span>
-<span id="cb3-41"><a href="#cb3-41"></a><span class="kw">glimpse</span>(dt <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate_if</span>(can_discretize, as.numeric))</span>
-<span id="cb3-42"><a href="#cb3-42"></a><span class="co">#&gt; Rows: 20</span></span>
-<span id="cb3-43"><a href="#cb3-43"></a><span class="co">#&gt; Columns: 3</span></span>
-<span id="cb3-44"><a href="#cb3-44"></a><span class="co">#&gt; $ x &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20</span></span>
-<span id="cb3-45"><a href="#cb3-45"></a><span class="co">#&gt; $ y &lt;dbl&gt; -0.56047565, -0.23017749, 1.55870831, 0.07050839, 0.12928774, 1.71506499, 0.46091621, -1.26506123, -0.68685285, -0.44566197, 1.22408180, …</span></span>
-<span id="cb3-46"><a href="#cb3-46"></a><span class="co">#&gt; $ z &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2</span></span></code></pre></div>
+<span id="cb3-30"><a href="#cb3-30"></a></span>
+<span id="cb3-31"><a href="#cb3-31"></a><span class="kw">glimpse</span>(dt)</span>
+<span id="cb3-32"><a href="#cb3-32"></a><span class="co">#&gt; Rows: 20</span></span>
+<span id="cb3-33"><a href="#cb3-33"></a><span class="co">#&gt; Columns: 3</span></span>
+<span id="cb3-34"><a href="#cb3-34"></a><span class="co">#&gt; $ x &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20</span></span>
+<span id="cb3-35"><a href="#cb3-35"></a><span class="co">#&gt; $ y &lt;dbl&gt; -0.56047565, -0.23017749, 1.55870831, 0.07050839, 0.12928774, 1.71506499, 0.46091621, -1.26506123, -0.68685285, -0.44566197, 1.22408180, …</span></span>
+<span id="cb3-36"><a href="#cb3-36"></a><span class="co">#&gt; $ z &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2</span></span>
+<span id="cb3-37"><a href="#cb3-37"></a><span class="kw">glimpse</span>(dt <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate_if</span>(can_discretize, as.numeric))</span>
+<span id="cb3-38"><a href="#cb3-38"></a><span class="co">#&gt; Rows: 20</span></span>
+<span id="cb3-39"><a href="#cb3-39"></a><span class="co">#&gt; Columns: 3</span></span>
+<span id="cb3-40"><a href="#cb3-40"></a><span class="co">#&gt; $ x &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20</span></span>
+<span id="cb3-41"><a href="#cb3-41"></a><span class="co">#&gt; $ y &lt;dbl&gt; -0.56047565, -0.23017749, 1.55870831, 0.07050839, 0.12928774, 1.71506499, 0.46091621, -1.26506123, -0.68685285, -0.44566197, 1.22408180, …</span></span>
+<span id="cb3-42"><a href="#cb3-42"></a><span class="co">#&gt; $ z &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2</span></span></code></pre></div>
 
 
 

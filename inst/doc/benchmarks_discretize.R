@@ -88,7 +88,7 @@ if(is.pkg && !pkgdown::in_pkgdown()) {
 #  }
 #  
 #  make_df <- function(bm_data, package) {
-#    data_frame(
+#    tibble(
 #      rows = rep(
 #        x = as.integer(
 #          gsub(

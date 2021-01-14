@@ -31,6 +31,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
@@ -120,6 +129,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 })();
 </script>
+
 
 
 
@@ -424,7 +434,7 @@ margin: 0 auto;
 <span id="cb4-25"><a href="#cb4-25"></a>}</span>
 <span id="cb4-26"><a href="#cb4-26"></a></span>
 <span id="cb4-27"><a href="#cb4-27"></a>make_df &lt;-<span class="st"> </span><span class="cf">function</span>(bm_data, package) {</span>
-<span id="cb4-28"><a href="#cb4-28"></a>  <span class="kw">data_frame</span>(</span>
+<span id="cb4-28"><a href="#cb4-28"></a>  <span class="kw">tibble</span>(</span>
 <span id="cb4-29"><a href="#cb4-29"></a>    <span class="dt">rows =</span> <span class="kw">rep</span>(</span>
 <span id="cb4-30"><a href="#cb4-30"></a>      <span class="dt">x =</span> <span class="kw">as.integer</span>(</span>
 <span id="cb4-31"><a href="#cb4-31"></a>        <span class="kw">gsub</span>(</span>
@@ -508,7 +518,7 @@ margin: 0 auto;
 <p>Dougherty, James, Ron Kohavi, and Mehran Sahami. 1995. “Supervised and Unsupervised Discretization of Continuous Features.” In <em>MACHINE Learning: PROCEEDINGS of the Twelfth International Conference</em>, 194–202. Morgan Kaufmann.</p>
 </div>
 <div id="ref-HarrellDISC">
-<p>Harrell, Frank. 2015. “General Handouts and Reference Material on Biostatistical Modeling - Problems Caused by Categorizing Continuous Variables.” Vanderbilt Biostatistics Wiki. 2015. <a href="http://biostat.mc.vanderbilt.edu/wiki/Main/CatContinuous">http://biostat.mc.vanderbilt.edu/wiki/Main/CatContinuous</a>.</p>
+<p>Harrell, Frank. 2015. “General Handouts and Reference Material on Biostatistical Modeling - Problems Caused by Categorizing Continuous Variables.” Vanderbilt Biostatistics Wiki. 2015. <a href="https://discourse.datamethods.org/t/categorizing-continuous-variables/3402">https://discourse.datamethods.org/t/categorizing-continuous-variables/3402</a>.</p>
 </div>
 <div id="ref-Holte1993">
 <p>Holte, Robert C. 1993. “Very Simple Classification Rules Perform Well on Most Commonly Used Datasets.” <em>Machine Learning</em> 11 (1): 63–90. <a href="https://doi.org/10.1023/A:1022631118932">https://doi.org/10.1023/A:1022631118932</a>.</p>
