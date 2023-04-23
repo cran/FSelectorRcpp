@@ -14,99 +14,103 @@
 
 <title>Benchmarks: discretize()</title>
 
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
   }
 });
 </script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
-  { counter-reset: source-line 0; }
+{ counter-reset: source-line 0; }
 pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
+{ position: relative; left: -4em; counter-increment: source-line; }
 pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -115,13 +119,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -132,6 +143,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
 
 <style type="text/css">body {
 background-color: #fff;
@@ -336,201 +369,263 @@ margin: 0 auto;
 
 
 <h1 class="title toc-ignore">Benchmarks: discretize()</h1>
-<h3 class="subtitle"><small><a href="http://r-addict.com/About.html">Marcin Kosinski</a>  <a href="https://stackoverflow.com/users/3857701"><i class="fa fa-stack-overflow"></i></a>  <a href="http://r-addict.com"><i class="fa fa-comment"></i></a>  <a href="https://github.com/MarcinKosinski"><i class="fa fa-github"></i></a>  <a href="mailto:m.p.kosinski@gmail.com"><i class="fa fa-envelope-o"></i></a><br>Krzysztof Slomczynski  <a href="https://github.com/krzyslom"><i class="fa fa-github"></i></a>  <a href="mailto:krzysztofslomczynski@gmail.com"><i class="fa fa-envelope-o"></i></a></small><br></h3>
+<h3 class="subtitle"><small><a href="http://r-addict.com/About.html">Marcin
+Kosinski</a>  <a href="https://stackoverflow.com/users/3857701"><i class="fa fa-stack-overflow"></i></a>  <a href="http://r-addict.com"><i class="fa fa-comment"></i></a>  <a href="https://github.com/MarcinKosinski"><i class="fa fa-github"></i></a>  <a href="mailto:m.p.kosinski@gmail.com"><i class="fa fa-envelope-o"></i></a><br>Krzysztof
+Slomczynski  <a href="https://github.com/krzyslom"><i class="fa fa-github"></i></a>  <a href="mailto:krzysztofslomczynski@gmail.com"><i class="fa fa-envelope-o"></i></a></small><br></h3>
 
 
 <div id="TOC">
 <ul>
-<li><a href="#benchmark-is-not-available-here-we-dont-want-to-run-this-code-on-the-cran-server.-please-visit-the-httpsmi2-warsaw.github.iofselectorrcpparticlesbenchmarks_discretize.html">Benchmark is not available here (we don’t want to run this code on the CRAN server). Please visit the <span>https://mi2-warsaw.github.io/FSelectorRcpp/articles/benchmarks_discretize.html</span></a></li>
-<li><a href="#about-discretization">About discretization</a></li>
-<li><a href="#comparisons-on-rtcga-data">Comparisons on RTCGA data</a><ul>
-<li><a href="#about-the-cancer-genome-atlas">About The Cancer Genome Atlas</a></li>
-<li><a href="#dependent-variable">Dependent variable</a></li>
-<li><a href="#independent-variables">Independent variables</a></li>
-<li><a href="#more">More</a></li>
+<li><a href="#benchmark-is-not-available-here-we-dont-want-to-run-this-code-on-the-cran-server.-please-visit-the-httpsmi2-warsaw.github.iofselectorrcpparticlesbenchmarks_discretize.html" id="toc-benchmark-is-not-available-here-we-dont-want-to-run-this-code-on-the-cran-server.-please-visit-the-httpsmi2-warsaw.github.iofselectorrcpparticlesbenchmarks_discretize.html">Benchmark
+is not available here (we don’t want to run this code on the CRAN
+server). Please visit the
+https://mi2-warsaw.github.io/FSelectorRcpp/articles/benchmarks_discretize.html</a></li>
+<li><a href="#about-discretization" id="toc-about-discretization">About
+discretization</a></li>
+<li><a href="#comparisons-on-rtcga-data" id="toc-comparisons-on-rtcga-data">Comparisons on RTCGA data</a>
+<ul>
+<li><a href="#about-the-cancer-genome-atlas" id="toc-about-the-cancer-genome-atlas">About The Cancer Genome
+Atlas</a></li>
+<li><a href="#dependent-variable" id="toc-dependent-variable">Dependent
+variable</a></li>
+<li><a href="#independent-variables" id="toc-independent-variables">Independent variables</a></li>
+<li><a href="#more" id="toc-more">More</a></li>
 </ul></li>
-<li><a href="#discretization-benchmarks">Discretization Benchmarks</a><ul>
-<li><a href="#plots">Plots</a></li>
+<li><a href="#discretization-benchmarks" id="toc-discretization-benchmarks">Discretization Benchmarks</a>
+<ul>
+<li><a href="#plots" id="toc-plots">Plots</a></li>
 </ul></li>
-<li><a href="#references">References</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
 </ul>
 </div>
 
 <div id="benchmark-is-not-available-here-we-dont-want-to-run-this-code-on-the-cran-server.-please-visit-the-httpsmi2-warsaw.github.iofselectorrcpparticlesbenchmarks_discretize.html" class="section level3">
-<h3>Benchmark is not available here (we don’t want to run this code on the CRAN server). Please visit the <a href="https://mi2-warsaw.github.io/FSelectorRcpp/articles/benchmarks_discretize.html" class="uri">https://mi2-warsaw.github.io/FSelectorRcpp/articles/benchmarks_discretize.html</a></h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(microbenchmark)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(FSelectorRcpp)</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(RWeka)</span></code></pre></div>
+<h3>Benchmark is not available here (we don’t want to run this code on
+the CRAN server). Please visit the <a href="https://mi2-warsaw.github.io/FSelectorRcpp/articles/benchmarks_discretize.html" class="uri">https://mi2-warsaw.github.io/FSelectorRcpp/articles/benchmarks_discretize.html</a></h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(microbenchmark)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FSelectorRcpp)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RWeka)</span></code></pre></div>
 </div>
 <div id="about-discretization" class="section level1">
 <h1>About discretization</h1>
-<p>In the statistical modelling, the <strong>discretization</strong> is the process of transferring continuous explanatory variables into discrete counterparts. Problems caused by categorization of continuous variables are known and widely spread <span class="citation">(Harrell 2015)</span>, but in some cases there appear an algorithmic requirement for the discretization. Moreover, there exist few algorithms, like <strong>Decision Trees</strong> <span class="citation">(Salzberg 1994)</span>, where continuous attributes are discretized during the learning process. Other reason for variable discretization include increasing the speed of induction algorithms <span class="citation">(Catlett 1991)</span>.</p>
-<p>Even though many categorization algorithms have been developed <span class="citation">(Holte 1993, @Chan169942)</span>, in this article we focus on a recursive entropy minimization heuristic for categorization coupled with a <strong>Minimum Description Length (MDL)</strong> critetion <span class="citation">(Rissanen 1986)</span> that controls the number of intervals produced over the continuous space. This is motivated by the original usage of this algorithm in <strong>FSelector</strong> package, which is our baseline.</p>
-<p><span class="citation">(Dougherty, Kohavi, and Sahami 1995)</span> showed better performance of classification for discretized feature set on real-world datasets and states that the described method was found promising by the authors not only for the local discretization but also for global discretization <span class="citation">(Ting 1994)</span>.</p>
+<p>In the statistical modelling, the <strong>discretization</strong> is
+the process of transferring continuous explanatory variables into
+discrete counterparts. Problems caused by categorization of continuous
+variables are known and widely spread <span class="citation">(Harrell
+2015)</span>, but in some cases there appear an algorithmic requirement
+for the discretization. Moreover, there exist few algorithms, like
+<strong>Decision Trees</strong> <span class="citation">(Salzberg
+1994)</span>, where continuous attributes are discretized during the
+learning process. Other reason for variable discretization include
+increasing the speed of induction algorithms <span class="citation">(Catlett 1991)</span>.</p>
+<p>Even though many categorization algorithms have been developed <span class="citation">Chan, Batur, and Srinivasan (1991)</span>, in this
+article we focus on a recursive entropy minimization heuristic for
+categorization coupled with a <strong>Minimum Description Length
+(MDL)</strong> critetion <span class="citation">(Rissanen 1986)</span>
+that controls the number of intervals produced over the continuous
+space. This is motivated by the original usage of this algorithm in
+<strong>FSelector</strong> package, which is our baseline.</p>
+<p><span class="citation">(Dougherty, Kohavi, and Sahami 1995)</span>
+showed better performance of classification for discretized feature set
+on real-world datasets and states that the described method was found
+promising by the authors not only for the local discretization but also
+for global discretization <span class="citation">(Ting 1994)</span>.</p>
 </div>
 <div id="comparisons-on-rtcga-data" class="section level1">
 <h1>Comparisons on RTCGA data</h1>
 <div id="about-the-cancer-genome-atlas" class="section level2">
 <h2>About The Cancer Genome Atlas</h2>
 <blockquote>
-<p>The Cancer Genome Atlas (TCGA) is a comprehensive and coordinated effort to accelerate our understanding of the molecular basis of cancer through the application of genome analysis technologies, including large-scale genome sequencing - <a href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga">https://cancergenome.nih.gov/</a>.</p>
+<p>The Cancer Genome Atlas (TCGA) is a comprehensive and coordinated
+effort to accelerate our understanding of the molecular basis of cancer
+through the application of genome analysis technologies, including
+large-scale genome sequencing - <a href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga">https://cancergenome.nih.gov/</a>.</p>
 </blockquote>
-<p><a href="https://github.com/orgs/RTCGA/people">RTCGA team</a> converted selected datasets from this study into few separate packages that are hosted on Bioconductor. These R packages make selected datasets easier to access and manage. Data sets in RTCGA packages are large and cover complex relations between clinical outcomes and genetic background.</p>
-<p>To use RTCGA install package with instructions from it’s <a href="https://bioconductor.org/packages/release/bioc/html/RTCGA.html">Bioconductor home page</a></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">## try https:// if https:// URLs are not supported</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">source</span>(<span class="st">&quot;https://bioconductor.org/biocLite.R&quot;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">biocLite</span>(<span class="st">&quot;RTCGA&quot;</span>)</span></code></pre></div>
+<p><a href="https://github.com/orgs/RTCGA/people">RTCGA team</a>
+converted selected datasets from this study into few separate packages
+that are hosted on Bioconductor. These R packages make selected datasets
+easier to access and manage. Data sets in RTCGA packages are large and
+cover complex relations between clinical outcomes and genetic
+background.</p>
+<p>To use RTCGA install package with instructions from it’s <a href="https://bioconductor.org/packages/release/bioc/html/RTCGA.html">Bioconductor
+home page</a></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## try https:// if https:// URLs are not supported</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;https://bioconductor.org/biocLite.R&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">biocLite</span>(<span class="st">&quot;RTCGA&quot;</span>)</span></code></pre></div>
 </div>
 <div id="dependent-variable" class="section level2">
 <h2>Dependent variable</h2>
-<p>Specifies whether a sample came from tumour or healthy tissue. It is denoted by 14th sign in <code>bcr_patiend_barcode</code> variable in <code>BRCA.rnaseq</code> dataset that containt RNA-Seq genes’ expressions for patients suffering from Breast Cancer.</p>
+<p>Specifies whether a sample came from tumour or healthy tissue. It is
+denoted by 14th sign in <code>bcr_patiend_barcode</code> variable in
+<code>BRCA.rnaseq</code> dataset that containt RNA-Seq genes’
+expressions for patients suffering from Breast Cancer.</p>
 </div>
 <div id="independent-variables" class="section level2">
 <h2>Independent variables</h2>
 <p>It is mandatory to get rid of special signs from their names.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">library</span>(RTCGA.rnaseq)</span>
-<span id="cb3-2"><a href="#cb3-2"></a>BRCA.rnaseq &lt;-<span class="st"> </span>RTCGA.rnaseq<span class="op">::</span>BRCA.rnaseq</span>
-<span id="cb3-3"><a href="#cb3-3"></a>BRCA.rnaseq<span class="op">$</span>bcr_patient_barcode &lt;-<span class="st"> </span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="st">   </span><span class="kw">factor</span>(<span class="kw">substr</span>(BRCA.rnaseq<span class="op">$</span>bcr_patient_barcode, <span class="dv">14</span>, <span class="dv">14</span>))</span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="kw">names</span>(BRCA.rnaseq) &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="dt">pattern =</span> <span class="st">&quot;?&quot;</span>, <span class="dt">replacement =</span> <span class="st">&quot;q&quot;</span>,</span>
-<span id="cb3-6"><a href="#cb3-6"></a>                           <span class="dt">x =</span> <span class="kw">names</span>(BRCA.rnaseq), <span class="dt">fixed =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="kw">names</span>(BRCA.rnaseq) &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="dt">pattern =</span> <span class="st">&quot;[[:punct:]]&quot;</span>, <span class="dt">replacement =</span> <span class="st">&quot;_&quot;</span>,</span>
-<span id="cb3-8"><a href="#cb3-8"></a>                           <span class="dt">x =</span> <span class="kw">names</span>(BRCA.rnaseq))</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RTCGA.rnaseq)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>BRCA.rnaseq <span class="ot">&lt;-</span> RTCGA.rnaseq<span class="sc">::</span>BRCA.rnaseq</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>BRCA.rnaseq<span class="sc">$</span>bcr_patient_barcode <span class="ot">&lt;-</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">factor</span>(<span class="fu">substr</span>(BRCA.rnaseq<span class="sc">$</span>bcr_patient_barcode, <span class="dv">14</span>, <span class="dv">14</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(BRCA.rnaseq) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">&quot;?&quot;</span>, <span class="at">replacement =</span> <span class="st">&quot;q&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">x =</span> <span class="fu">names</span>(BRCA.rnaseq), <span class="at">fixed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(BRCA.rnaseq) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">&quot;[[:punct:]]&quot;</span>, <span class="at">replacement =</span> <span class="st">&quot;_&quot;</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">x =</span> <span class="fu">names</span>(BRCA.rnaseq))</span></code></pre></div>
 </div>
 <div id="more" class="section level2">
 <h2>More</h2>
 <ul>
-<li><a href="http://r-addict.com/2016/05/04/RTCGA-Quick-Guide.html">RTCGA Quick Guide</a></li>
+<li><a href="http://r-addict.com/2016/05/04/RTCGA-Quick-Guide.html">RTCGA Quick
+Guide</a></li>
 <li><a href="https://rtcga.github.io/RTCGA/">RTCGA Website</a></li>
 </ul>
 </div>
 </div>
 <div id="discretization-benchmarks" class="section level1">
 <h1>Discretization Benchmarks</h1>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">library</span>(pbapply)</span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="kw">library</span>(tibble)</span>
-<span id="cb4-4"><a href="#cb4-4"></a>names_by &lt;-<span class="st"> </span><span class="cf">function</span>(nameBy, vecBy) {</span>
-<span id="cb4-5"><a href="#cb4-5"></a>  <span class="kw">c</span>(<span class="kw">paste0</span>(nameBy,</span>
-<span id="cb4-6"><a href="#cb4-6"></a>           <span class="kw">sapply</span>(<span class="kw">max</span>(<span class="kw">nchar</span>(vecBy)) <span class="op">-</span><span class="st"> </span><span class="kw">nchar</span>(vecBy),</span>
-<span id="cb4-7"><a href="#cb4-7"></a>                  <span class="cf">function</span>(zeros) {</span>
-<span id="cb4-8"><a href="#cb4-8"></a>                    <span class="kw">paste0</span>(<span class="kw">rep</span>(<span class="dv">0</span>, zeros), <span class="dt">collapse =</span> <span class="st">&quot;&quot;</span>)</span>
-<span id="cb4-9"><a href="#cb4-9"></a>                  }), </span>
-<span id="cb4-10"><a href="#cb4-10"></a>                  vecBy))</span>
-<span id="cb4-11"><a href="#cb4-11"></a>}</span>
-<span id="cb4-12"><a href="#cb4-12"></a></span>
-<span id="cb4-13"><a href="#cb4-13"></a>get_times &lt;-<span class="st"> </span><span class="cf">function</span>(fun, vecRows, vecCols, nTimes) {</span>
-<span id="cb4-14"><a href="#cb4-14"></a>  forRows &lt;-<span class="st"> </span><span class="kw">pblapply</span>(vecRows, <span class="cf">function</span>(nRows) {</span>
-<span id="cb4-15"><a href="#cb4-15"></a>    forCols &lt;-<span class="st"> </span><span class="kw">pblapply</span>(vecCols <span class="op">+</span><span class="st"> </span><span class="dv">1</span>, <span class="cf">function</span>(nCols) {</span>
-<span id="cb4-16"><a href="#cb4-16"></a>      <span class="kw">suppressWarnings</span>(<span class="kw">microbenchmark</span>(<span class="kw">fun</span>(bcr_patient_barcode <span class="op">~</span><span class="st"> </span>.,</span>
-<span id="cb4-17"><a href="#cb4-17"></a>                         BRCA.rnaseq[<span class="dv">1</span><span class="op">:</span>nRows, <span class="dv">1</span><span class="op">:</span>nCols]),</span>
-<span id="cb4-18"><a href="#cb4-18"></a>                     <span class="dt">times =</span> nTimes))</span>
-<span id="cb4-19"><a href="#cb4-19"></a>    })</span>
-<span id="cb4-20"><a href="#cb4-20"></a>    colsNames &lt;-<span class="st"> </span><span class="kw">names_by</span>(<span class="dt">nameBy =</span> <span class="st">&quot;columns_&quot;</span>, <span class="dt">vecBy =</span> vecCols)</span>
-<span id="cb4-21"><a href="#cb4-21"></a>    <span class="kw">setNames</span>(forCols, colsNames)</span>
-<span id="cb4-22"><a href="#cb4-22"></a>  })</span>
-<span id="cb4-23"><a href="#cb4-23"></a>  rowsNames &lt;-<span class="st"> </span><span class="kw">names_by</span>(<span class="dt">nameBy =</span> <span class="st">&quot;rows_&quot;</span>, <span class="dt">vecBy =</span> vecRows)</span>
-<span id="cb4-24"><a href="#cb4-24"></a>  <span class="kw">setNames</span>(forRows, rowsNames)</span>
-<span id="cb4-25"><a href="#cb4-25"></a>}</span>
-<span id="cb4-26"><a href="#cb4-26"></a></span>
-<span id="cb4-27"><a href="#cb4-27"></a>make_df &lt;-<span class="st"> </span><span class="cf">function</span>(bm_data, package) {</span>
-<span id="cb4-28"><a href="#cb4-28"></a>  <span class="kw">tibble</span>(</span>
-<span id="cb4-29"><a href="#cb4-29"></a>    <span class="dt">rows =</span> <span class="kw">rep</span>(</span>
-<span id="cb4-30"><a href="#cb4-30"></a>      <span class="dt">x =</span> <span class="kw">as.integer</span>(</span>
-<span id="cb4-31"><a href="#cb4-31"></a>        <span class="kw">gsub</span>(</span>
-<span id="cb4-32"><a href="#cb4-32"></a>          <span class="dt">pattern =</span> <span class="st">&quot;rows_0*&quot;</span>,</span>
-<span id="cb4-33"><a href="#cb4-33"></a>             <span class="dt">replacement =</span> <span class="st">&quot;&quot;</span>,</span>
-<span id="cb4-34"><a href="#cb4-34"></a>             <span class="dt">x =</span> <span class="kw">names</span>(bm_data)</span>
-<span id="cb4-35"><a href="#cb4-35"></a>        )</span>
-<span id="cb4-36"><a href="#cb4-36"></a>      ),</span>
-<span id="cb4-37"><a href="#cb4-37"></a>      <span class="dt">each =</span>  <span class="kw">unique</span>(<span class="kw">sapply</span>(bm_data, length))</span>
-<span id="cb4-38"><a href="#cb4-38"></a>    ),</span>
-<span id="cb4-39"><a href="#cb4-39"></a>    <span class="dt">columns =</span> <span class="kw">as.integer</span>(</span>
-<span id="cb4-40"><a href="#cb4-40"></a>      <span class="kw">gsub</span>(</span>
-<span id="cb4-41"><a href="#cb4-41"></a>        <span class="dt">pattern =</span> <span class="st">&quot;columns_0*&quot;</span>,</span>
-<span id="cb4-42"><a href="#cb4-42"></a>        <span class="dt">replacement =</span> <span class="st">&quot;&quot;</span>,</span>
-<span id="cb4-43"><a href="#cb4-43"></a>        <span class="dt">x =</span> <span class="kw">as.vector</span>(<span class="kw">sapply</span>(bm_data, names))</span>
-<span id="cb4-44"><a href="#cb4-44"></a>      )</span>
-<span id="cb4-45"><a href="#cb4-45"></a>    ),</span>
-<span id="cb4-46"><a href="#cb4-46"></a>    <span class="dt">time =</span> <span class="kw">as.vector</span>(</span>
-<span id="cb4-47"><a href="#cb4-47"></a>      <span class="kw">sapply</span>(</span>
-<span id="cb4-48"><a href="#cb4-48"></a>        bm_data,</span>
-<span id="cb4-49"><a href="#cb4-49"></a>        <span class="cf">function</span>(setOfCols) {</span>
-<span id="cb4-50"><a href="#cb4-50"></a>          <span class="kw">sapply</span>(</span>
-<span id="cb4-51"><a href="#cb4-51"></a>            setOfCols,</span>
-<span id="cb4-52"><a href="#cb4-52"></a>            <span class="cf">function</span>(set) {</span>
-<span id="cb4-53"><a href="#cb4-53"></a>              <span class="kw">median</span>(set<span class="op">$</span>time) <span class="op">/</span><span class="st"> </span><span class="dv">10</span> <span class="op">^</span><span class="st"> </span><span class="dv">9</span></span>
-<span id="cb4-54"><a href="#cb4-54"></a>            }</span>
-<span id="cb4-55"><a href="#cb4-55"></a>          )</span>
-<span id="cb4-56"><a href="#cb4-56"></a>        }</span>
-<span id="cb4-57"><a href="#cb4-57"></a>      )</span>
-<span id="cb4-58"><a href="#cb4-58"></a>    ),</span>
-<span id="cb4-59"><a href="#cb4-59"></a>    <span class="dt">package =</span> package</span>
-<span id="cb4-60"><a href="#cb4-60"></a>  )</span>
-<span id="cb4-61"><a href="#cb4-61"></a>}</span>
-<span id="cb4-62"><a href="#cb4-62"></a></span>
-<span id="cb4-63"><a href="#cb4-63"></a>bm_fsr_discretize &lt;-<span class="st"> </span><span class="kw">get_times</span>(<span class="dt">fun =</span> discretize,</span>
-<span id="cb4-64"><a href="#cb4-64"></a>                               <span class="dt">vecRows =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">200</span>, <span class="dt">to =</span> <span class="dv">1000</span>, <span class="dt">by =</span> <span class="dv">200</span>),</span>
-<span id="cb4-65"><a href="#cb4-65"></a>                               <span class="dt">vecCols =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>),</span>
-<span id="cb4-66"><a href="#cb4-66"></a>                               <span class="dt">nTimes =</span> 1L)</span>
-<span id="cb4-67"><a href="#cb4-67"></a>bm_rwk_discretize &lt;-<span class="st"> </span><span class="kw">get_times</span>(<span class="dt">fun =</span> Discretize,</span>
-<span id="cb4-68"><a href="#cb4-68"></a>                               <span class="dt">vecRows =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">200</span>, <span class="dt">to =</span> <span class="dv">1000</span>, <span class="dt">by =</span> <span class="dv">200</span>),</span>
-<span id="cb4-69"><a href="#cb4-69"></a>                               <span class="dt">vecCols =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>),</span>
-<span id="cb4-70"><a href="#cb4-70"></a>                               <span class="dt">nTimes =</span> 1L)</span>
-<span id="cb4-71"><a href="#cb4-71"></a></span>
-<span id="cb4-72"><a href="#cb4-72"></a>df_fsr &lt;-<span class="st"> </span><span class="kw">make_df</span>(<span class="dt">bm_data =</span> bm_fsr_discretize, <span class="dt">package =</span> <span class="st">&quot;FSelectorRcpp&quot;</span>)</span>
-<span id="cb4-73"><a href="#cb4-73"></a>df_rwk &lt;-<span class="st"> </span><span class="kw">make_df</span>(<span class="dt">bm_data =</span> bm_rwk_discretize, <span class="dt">package =</span> <span class="st">&quot;RWeka&quot;</span>)</span>
-<span id="cb4-74"><a href="#cb4-74"></a>bm_df &lt;-<span class="st"> </span><span class="kw">rbind</span>(df_fsr, df_rwk)</span>
-<span id="cb4-75"><a href="#cb4-75"></a></span>
-<span id="cb4-76"><a href="#cb4-76"></a>make_plot &lt;-<span class="st"> </span><span class="cf">function</span>(y) {</span>
-<span id="cb4-77"><a href="#cb4-77"></a>  yUnit &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="dt">pattern =</span> <span class="st">&quot;time&quot;</span>,</span>
-<span id="cb4-78"><a href="#cb4-78"></a>                <span class="dt">replacement =</span> <span class="st">&quot;s&quot;</span>,</span>
-<span id="cb4-79"><a href="#cb4-79"></a>                <span class="dt">x =</span> y)</span>
-<span id="cb4-80"><a href="#cb4-80"></a>  </span>
-<span id="cb4-81"><a href="#cb4-81"></a>  <span class="kw">ggplot</span>(<span class="dt">data =</span> bm_df, <span class="kw">aes_string</span>(<span class="dt">x =</span> <span class="st">&quot;rows&quot;</span>, <span class="dt">y =</span> y, <span class="dt">color =</span> <span class="st">&quot;package&quot;</span>)) <span class="op">+</span></span>
-<span id="cb4-82"><a href="#cb4-82"></a><span class="st">  </span><span class="kw">facet_grid</span>(columns <span class="op">~</span><span class="st"> </span>., <span class="dt">labeller =</span> label_both) <span class="op">+</span></span>
-<span id="cb4-83"><a href="#cb4-83"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
-<span id="cb4-84"><a href="#cb4-84"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Number of rows [-]&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-85"><a href="#cb4-85"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="kw">paste0</span>(<span class="st">&quot;Elapsed time [&quot;</span>, yUnit, <span class="st">&quot;]&quot;</span>)) <span class="op">+</span></span>
-<span id="cb4-86"><a href="#cb4-86"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="dt">label =</span> <span class="st">&quot;Microbenchmark: discretization function comparison&quot;</span>,</span>
-<span id="cb4-87"><a href="#cb4-87"></a>          <span class="dt">subtitle =</span> <span class="st">&quot;for different sizes of data sets&quot;</span>) <span class="op">+</span></span>
-<span id="cb4-88"><a href="#cb4-88"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb4-89"><a href="#cb4-89"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb4-90"><a href="#cb4-90"></a>        <span class="dt">legend.position =</span> <span class="st">&quot;top&quot;</span>)</span>
-<span id="cb4-91"><a href="#cb4-91"></a>}</span>
-<span id="cb4-92"><a href="#cb4-92"></a></span>
-<span id="cb4-93"><a href="#cb4-93"></a>bm_plot &lt;-<span class="st"> </span><span class="kw">make_plot</span>(<span class="st">&quot;time&quot;</span>)</span>
-<span id="cb4-94"><a href="#cb4-94"></a>bm_plot_log &lt;-<span class="st"> </span><span class="kw">make_plot</span>(<span class="st">&quot;log(time)&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pbapply)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>names_by <span class="ot">&lt;-</span> <span class="cf">function</span>(nameBy, vecBy) {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fu">paste0</span>(nameBy,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>           <span class="fu">sapply</span>(<span class="fu">max</span>(<span class="fu">nchar</span>(vecBy)) <span class="sc">-</span> <span class="fu">nchar</span>(vecBy),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">function</span>(zeros) {</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">paste0</span>(<span class="fu">rep</span>(<span class="dv">0</span>, zeros), <span class="at">collapse =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                  }), </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                  vecBy))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>get_times <span class="ot">&lt;-</span> <span class="cf">function</span>(fun, vecRows, vecCols, nTimes) {</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  forRows <span class="ot">&lt;-</span> <span class="fu">pblapply</span>(vecRows, <span class="cf">function</span>(nRows) {</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    forCols <span class="ot">&lt;-</span> <span class="fu">pblapply</span>(vecCols <span class="sc">+</span> <span class="dv">1</span>, <span class="cf">function</span>(nCols) {</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">suppressWarnings</span>(<span class="fu">microbenchmark</span>(<span class="fu">fun</span>(bcr_patient_barcode <span class="sc">~</span> .,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                         BRCA.rnaseq[<span class="dv">1</span><span class="sc">:</span>nRows, <span class="dv">1</span><span class="sc">:</span>nCols]),</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">times =</span> nTimes))</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    colsNames <span class="ot">&lt;-</span> <span class="fu">names_by</span>(<span class="at">nameBy =</span> <span class="st">&quot;columns_&quot;</span>, <span class="at">vecBy =</span> vecCols)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setNames</span>(forCols, colsNames)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  rowsNames <span class="ot">&lt;-</span> <span class="fu">names_by</span>(<span class="at">nameBy =</span> <span class="st">&quot;rows_&quot;</span>, <span class="at">vecBy =</span> vecRows)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(forRows, rowsNames)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>make_df <span class="ot">&lt;-</span> <span class="cf">function</span>(bm_data, package) {</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">rows =</span> <span class="fu">rep</span>(</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">as.integer</span>(</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">gsub</span>(</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>          <span class="at">pattern =</span> <span class="st">&quot;rows_0*&quot;</span>,</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>             <span class="at">replacement =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> <span class="fu">names</span>(bm_data)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>      <span class="at">each =</span>  <span class="fu">unique</span>(<span class="fu">sapply</span>(bm_data, length))</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">as.integer</span>(</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">gsub</span>(</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>        <span class="at">pattern =</span> <span class="st">&quot;columns_0*&quot;</span>,</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>        <span class="at">replacement =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> <span class="fu">as.vector</span>(<span class="fu">sapply</span>(bm_data, names))</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">time =</span> <span class="fu">as.vector</span>(</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sapply</span>(</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>        bm_data,</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(setOfCols) {</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>          <span class="fu">sapply</span>(</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>            setOfCols,</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>            <span class="cf">function</span>(set) {</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>              <span class="fu">median</span>(set<span class="sc">$</span>time) <span class="sc">/</span> <span class="dv">10</span> <span class="sc">^</span> <span class="dv">9</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>          )</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">package =</span> package</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>bm_fsr_discretize <span class="ot">&lt;-</span> <span class="fu">get_times</span>(<span class="at">fun =</span> discretize,</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>                               <span class="at">vecRows =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">200</span>, <span class="at">to =</span> <span class="dv">1000</span>, <span class="at">by =</span> <span class="dv">200</span>),</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>                               <span class="at">vecCols =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>),</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>                               <span class="at">nTimes =</span> 1L)</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>bm_rwk_discretize <span class="ot">&lt;-</span> <span class="fu">get_times</span>(<span class="at">fun =</span> Discretize,</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>                               <span class="at">vecRows =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">200</span>, <span class="at">to =</span> <span class="dv">1000</span>, <span class="at">by =</span> <span class="dv">200</span>),</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>                               <span class="at">vecCols =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>),</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>                               <span class="at">nTimes =</span> 1L)</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>df_fsr <span class="ot">&lt;-</span> <span class="fu">make_df</span>(<span class="at">bm_data =</span> bm_fsr_discretize, <span class="at">package =</span> <span class="st">&quot;FSelectorRcpp&quot;</span>)</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>df_rwk <span class="ot">&lt;-</span> <span class="fu">make_df</span>(<span class="at">bm_data =</span> bm_rwk_discretize, <span class="at">package =</span> <span class="st">&quot;RWeka&quot;</span>)</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>bm_df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(df_fsr, df_rwk)</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>make_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(y) {</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>  yUnit <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">&quot;time&quot;</span>,</span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>                <span class="at">replacement =</span> <span class="st">&quot;s&quot;</span>,</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>                <span class="at">x =</span> y)</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> bm_df, <span class="fu">aes_string</span>(<span class="at">x =</span> <span class="st">&quot;rows&quot;</span>, <span class="at">y =</span> y, <span class="at">color =</span> <span class="st">&quot;package&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(columns <span class="sc">~</span> ., <span class="at">labeller =</span> label_both) <span class="sc">+</span></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Number of rows [-]&quot;</span>) <span class="sc">+</span></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">paste0</span>(<span class="st">&quot;Elapsed time [&quot;</span>, yUnit, <span class="st">&quot;]&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="at">label =</span> <span class="st">&quot;Microbenchmark: discretization function comparison&quot;</span>,</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">&quot;for different sizes of data sets&quot;</span>) <span class="sc">+</span></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>)</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>bm_plot <span class="ot">&lt;-</span> <span class="fu">make_plot</span>(<span class="st">&quot;time&quot;</span>)</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>bm_plot_log <span class="ot">&lt;-</span> <span class="fu">make_plot</span>(<span class="st">&quot;log(time)&quot;</span>)</span></code></pre></div>
 <div id="plots" class="section level2">
 <h2>Plots</h2>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="refs" class="references">
-<div id="ref-Catlett1991">
-<p>Catlett, J. 1991. “On Changing Continuous Attributes into Ordered Discrete Attributes.” In <em>Machine Learning — Ewsl-91: European Working Session on Learning Porto, Portugal, March 6–8, 1991 Proceedings</em>, edited by Yves Kodratoff, 164–78. Berlin, Heidelberg: Springer Berlin Heidelberg. <a href="https://doi.org/10.1007/BFb0017012">https://doi.org/10.1007/BFb0017012</a>.</p>
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Catlett1991" class="csl-entry">
+Catlett, J. 1991. <span>“On Changing Continuous Attributes into Ordered
+Discrete Attributes.”</span> In <em>Machine Learning — EWSL-91: European
+Working Session on Learning Porto, Portugal, March 6–8, 1991
+Proceedings</em>, edited by Yves Kodratoff, 164–78. Berlin, Heidelberg:
+Springer Berlin Heidelberg. <a href="https://doi.org/10.1007/BFb0017012">https://doi.org/10.1007/BFb0017012</a>.
 </div>
-<div id="ref-Chan169942">
-<p>Chan, C. C., C. Batur, and A. Srinivasan. 1991. “Determination of Quantization Intervals in Rule Based Model for Dynamic Systems.” In <em>Systems, Man, and Cybernetics, 1991. ’Decision Aiding for Complex Systems, Conference Proceedings., 1991 Ieee International Conference on</em>, 1719–23 vol.3. <a href="https://doi.org/10.1109/ICSMC.1991.169942">https://doi.org/10.1109/ICSMC.1991.169942</a>.</p>
+<div id="ref-Chan169942" class="csl-entry">
+Chan, C. C., C. Batur, and A. Srinivasan. 1991. <span>“Determination of
+Quantization Intervals in Rule Based Model for Dynamic Systems.”</span>
+In <em>Systems, Man, and Cybernetics, 1991. ’Decision Aiding for Complex
+Systems, Conference Proceedings., 1991 IEEE International Conference
+on</em>, 1719–1723 vol.3. <a href="https://doi.org/10.1109/ICSMC.1991.169942">https://doi.org/10.1109/ICSMC.1991.169942</a>.
 </div>
-<div id="ref-Dougherty95supervisedand">
-<p>Dougherty, James, Ron Kohavi, and Mehran Sahami. 1995. “Supervised and Unsupervised Discretization of Continuous Features.” In <em>MACHINE Learning: PROCEEDINGS of the Twelfth International Conference</em>, 194–202. Morgan Kaufmann.</p>
+<div id="ref-Dougherty95supervisedand" class="csl-entry">
+Dougherty, James, Ron Kohavi, and Mehran Sahami. 1995. <span>“Supervised
+and Unsupervised Discretization of Continuous Features.”</span> In
+<em>MACHINE LEARNING: PROCEEDINGS OF THE TWELFTH INTERNATIONAL
+CONFERENCE</em>, 194–202. Morgan Kaufmann.
 </div>
-<div id="ref-HarrellDISC">
-<p>Harrell, Frank. 2015. “General Handouts and Reference Material on Biostatistical Modeling - Problems Caused by Categorizing Continuous Variables.” Vanderbilt Biostatistics Wiki. 2015. <a href="https://discourse.datamethods.org/t/categorizing-continuous-variables/3402">https://discourse.datamethods.org/t/categorizing-continuous-variables/3402</a>.</p>
+<div id="ref-HarrellDISC" class="csl-entry">
+Harrell, Frank. 2015. <span>“General Handouts and Reference Material on
+Biostatistical Modeling - Problems Caused by Categorizing Continuous
+Variables.”</span> Vanderbilt Biostatistics Wiki. 2015. <a href="https://discourse.datamethods.org/t/categorizing-continuous-variables/3402">https://discourse.datamethods.org/t/categorizing-continuous-variables/3402</a>.
 </div>
-<div id="ref-Holte1993">
-<p>Holte, Robert C. 1993. “Very Simple Classification Rules Perform Well on Most Commonly Used Datasets.” <em>Machine Learning</em> 11 (1): 63–90. <a href="https://doi.org/10.1023/A:1022631118932">https://doi.org/10.1023/A:1022631118932</a>.</p>
+<div id="ref-Holte1993" class="csl-entry">
+Holte, Robert C. 1993. <span>“Very Simple Classification Rules Perform
+Well on Most Commonly Used Datasets.”</span> <em>Machine Learning</em>
+11 (1): 63–90. <a href="https://doi.org/10.1023/A:1022631118932">https://doi.org/10.1023/A:1022631118932</a>.
 </div>
-<div id="ref-rissanen1986">
-<p>Rissanen, Jorma. 1986. “Stochastic Complexity and Modeling.” <em>Ann. Statist.</em> 14 (3): 1080–1100. <a href="https://doi.org/10.1214/aos/1176350051">https://doi.org/10.1214/aos/1176350051</a>.</p>
+<div id="ref-rissanen1986" class="csl-entry">
+Rissanen, Jorma. 1986. <span>“Stochastic Complexity and
+Modeling.”</span> <em>Ann. Statist.</em> 14 (3): 1080–100. <a href="https://doi.org/10.1214/aos/1176350051">https://doi.org/10.1214/aos/1176350051</a>.
 </div>
-<div id="ref-Salzberg1994">
-<p>Salzberg, Steven L. 1994. “C4.5: Programs for Machine Learning by J. Ross Quinlan. Morgan Kaufmann Publishers, Inc., 1993.” <em>Machine Learning</em> 16 (3): 235–40. <a href="https://doi.org/10.1007/BF00993309">https://doi.org/10.1007/BF00993309</a>.</p>
+<div id="ref-Salzberg1994" class="csl-entry">
+Salzberg, Steven L. 1994. <span>“C4.5: Programs for Machine Learning by
+j. Ross Quinlan. Morgan Kaufmann Publishers, Inc., 1993.”</span>
+<em>Machine Learning</em> 16 (3): 235–40. <a href="https://doi.org/10.1007/BF00993309">https://doi.org/10.1007/BF00993309</a>.
 </div>
-<div id="ref-Ting94discretizationof">
-<p>Ting, Kai Ming. 1994. “Discretization of Continuous-Valued Attributes and Instance-Based Learning.”</p>
+<div id="ref-Ting94discretizationof" class="csl-entry">
+Ting, Kai Ming. 1994. <span>“Discretization of Continuous-Valued
+Attributes and Instance-Based Learning.”</span>
 </div>
 </div>
 </div>
