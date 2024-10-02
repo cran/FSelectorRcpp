@@ -15,7 +15,7 @@ to_formula(attrs, class)
 Utility function to create a \link{formula} object. Note that it may be very useful when you use pipes.
 }
 \examples{
-
+if(require("rpart")) {
 # evaluator from FSelector package
 evaluator <- function(subset, data, dependent = names(iris)[5]) {
   library(rpart)
@@ -41,5 +41,5 @@ fit$best
 names(fit$best)[fit$best == 1]
 # with to_formula
 to_formula(names(fit$best)[fit$best == 1], "Species")
-
+}
 }

@@ -37,8 +37,8 @@
 #'
 #' data.frame with the following columns:
 #' \itemize{
-#'  \item{attributes}{ - variables names.}
-#'  \item{importance}{ - worth of the attributes.}
+#'  \item attributes - variables names.
+#'  \item importance - worth of the attributes.
 #' }
 #'
 #' @author Zygmunt Zawadzki \email{zygmunt@zstat.pl}
@@ -57,14 +57,17 @@
 #' information_gain(formula = Species ~ ., data = iris, type = "symuncert")
 #'
 #' # sparse matrix interface
-#' library(Matrix)
-#' i <- c(1, 3:8); j <- c(2, 9, 6:10); x <- 7 * (1:7)
-#' x <- sparseMatrix(i, j, x = x)
-#' y <- c(1, 1, 1, 1, 2, 2, 2, 2)
+#' if(require("Matrix")) {
+#'   library(Matrix)
+#'   i <- c(1, 3:8); j <- c(2, 9, 6:10); x <- 7 * (1:7)
+#'   x <- sparseMatrix(i, j, x = x)
+#'   y <- c(1, 1, 1, 1, 2, 2, 2, 2)
 #'
-#' information_gain(x = x, y = y)
-#' information_gain(x = x, y = y, type = "gainratio")
-#' information_gain(x = x, y = y, type = "symuncert")
+#'   information_gain(x = x, y = y)
+#'   information_gain(x = x, y = y, type = "gainratio")
+#'   information_gain(x = x, y = y, type = "symuncert")
+#' }
+#'
 #'
 #' @importFrom Rcpp evalCpp
 #' @importFrom stats na.omit
@@ -124,8 +127,8 @@ information_gain <- function(formula, data, x, y,
 #'
 #' data.frame with the following columns:
 #' \itemize{
-#'  \item{attributes}{ - variables names.}
-#'  \item{importance}{ - worth of the attributes.}
+#'  \item attributes - variables names.
+#'  \item importance - worth of the attributes.
 #' }
 #'
 #' @export

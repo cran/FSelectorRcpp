@@ -33,7 +33,7 @@ of attributes subsets.}
 
 \item{parallel}{Allow parallelization.}
 
-\item{\dots}{Other arguments passed to \link{foreach} function.}
+\item{\dots}{Other arguments passed to \link[foreach]{foreach} function.}
 }
 \value{
 A list with following components
@@ -74,6 +74,7 @@ Note that score depends on the evaluator you provide in the \code{fun} parameter
 # stopCluster(cl) #nolint
 # registerDoSEQ() #nolint
 
+if(require("rpart")) {
 # 1) Evaluator from FSelector package.
 evaluator <- function(subset, data, dependent = names(iris)[5]) {
   library(rpart)
@@ -120,6 +121,7 @@ system.time(
                  mode = "exhaustive",
                  parallel = FALSE)
 )
+}
 
 # 2) Maximize R^2 statistics in the linear regression model/problem.
 
@@ -136,7 +138,7 @@ feature_search(attributes = names(iris)[-1],
 # 3) Optimize BIC crietion in generalized linear model.
 # Aim of Bayesian approach it to identify the model with the highest
 # probability of being the true model. - Kuha 2004
-
+if(require("MASS")) {
 utils::data(anorexia, package = "MASS")
 
 evaluator_BIC_glm <- function(attributes, data, dependent = "Postwt") {
@@ -151,7 +153,7 @@ feature_search(attributes = c("Prewt", "Treat", "offset(Prewt)"),
                fun = evaluator_BIC_glm,
                data = anorexia,
                mode = "exhaustive")
-
+}
 # Close parallelization
 \dontrun{
 stopCluster(cl)

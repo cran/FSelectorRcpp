@@ -1,10 +1,13 @@
-library(testthat)
-library(FSelectorRcpp)
-library(Matrix)
-library(Rcpp)
-library(RcppArmadillo)
-library(dplyr)
-library(entropy)
-library(lintr)
+if(
+  require(testthat) &&
+  require(FSelectorRcpp) &&
+  require(Matrix) &&
+  require(Rcpp) &&
+  require(RcppArmadillo) &&
+  require(dplyr) &&
+  require(entropy) &&
+  require(lintr)
+) {
+  test_check("FSelectorRcpp")
+}
 
-test_check("FSelectorRcpp")

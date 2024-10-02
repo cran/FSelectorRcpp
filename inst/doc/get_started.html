@@ -38,10 +38,18 @@ ul.task-list{list-style: none;}
 </style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -52,7 +60,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -111,13 +119,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -133,6 +148,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 div.csl-bib-body { }
 div.csl-entry {
 clear: both;
+margin-bottom: 0em;
 }
 .hanging div.csl-entry {
 margin-left:2em;
@@ -355,10 +371,6 @@ margin: 0 auto;
 
 <h1 class="title toc-ignore">Motivation, Installation and Quick
 Workflow</h1>
-<h3 class="subtitle"><small> <a href="http://r-addict.com/About.html">Marcin Kosinski</a>
-  <a href="https://stackoverflow.com/users/3857701"><i class="fa fa-stack-overflow"></i></a>  <a href="http://r-addict.com"><i class="fa fa-comment"></i></a>  <a href="https://github.com/MarcinKosinski"><i class="fa fa-github"></i></a>  <a href="mailto:m.p.kosinski@gmail.com"><i class="fa fa-envelope-o"></i></a>
-<br> <a href="https://www.zstat.pl/">Zygmunt Zawadzki</a>
-  <a href="https://www.zstat.pl/"><i class="fa fa-comment"></i></a>  <a href="https://github.com/zzawadz"><i class="fa fa-github"></i></a>  <a href="mailto:zygmunt@zstat.pl"><i class="fa fa-envelope-o"></i></a></small><br></h3>
 
 
 <div id="TOC">
@@ -379,10 +391,10 @@ entropy-based feature selection algorithms with a sparse matrix support.
 It is also equipped with a parallel backend.</p>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&#39;FSelectorRcpp&#39;</span>) <span class="co"># stable release version on CRAN</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&#39;mi2-warsaw/FSelectorRcpp&#39;</span>) <span class="co"># dev version</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># windows users should have Rtools for devtools installation</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># https://cran.r-project.org/bin/windows/Rtools/</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&#39;FSelectorRcpp&#39;</span>) <span class="co"># stable release version on CRAN</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&#39;mi2-warsaw/FSelectorRcpp&#39;</span>) <span class="co"># dev version</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># windows users should have Rtools for devtools installation</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># https://cran.r-project.org/bin/windows/Rtools/</span></span></code></pre></div>
 </div>
 <div id="motivation" class="section level2">
 <h2>Motivation</h2>
@@ -439,8 +451,8 @@ those from <strong>entropy</strong> package, used originally in
 </div>
 <div id="quick-workflow" class="section level2">
 <h2>Quick Workflow</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FSelectorRcpp)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(FSelectorRcpp)</span></code></pre></div>
 <p>A simple entropy based feature selection workflow.
 <strong>Information gain</strong> is an easy, linear algorithm that
 computes the entropy of a dependent and explanatory variables, and the
@@ -448,23 +460,23 @@ conditional entropy of a dependent variable with a respect to each
 explanatory variable separately. This simple statistic enables to
 calculate the belief of the distribution of a dependent variable when we
 only know the distribution of a explanatory variable.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">information_gain</span>(               <span class="co"># Calculate the score for each attribute</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> Species <span class="sc">~</span> .,      <span class="co"># that is on the right side of the formula.</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> iris,                <span class="co"># Attributes must exist in the passed data.</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">type  =</span> <span class="st">&quot;infogain&quot;</span>          <span class="co"># Choose the type of a score to be calculated.</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span>                          </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cut_attrs</span>(                    <span class="co"># Then take attributes with the highest rank.</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">2</span>                       <span class="co"># For example: 2 attrs with the higehst rank.</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span>                         </span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">to_formula</span>(                   <span class="co"># Create a new formula object with </span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">attrs =</span> .,                  <span class="co"># the most influencial attrs.</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">class =</span> <span class="st">&quot;Species&quot;</span>           </span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> .,                <span class="co"># Use that formula in any classification algorithm.</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> iris,                </span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>         </span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">information_gain</span>(               <span class="co"># Calculate the score for each attribute</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    <span class="at">formula =</span> Species <span class="sc">~</span> .,      <span class="co"># that is on the right side of the formula.</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">data =</span> iris,                <span class="co"># Attributes must exist in the passed data.</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">type  =</span> <span class="st">&quot;infogain&quot;</span>          <span class="co"># Choose the type of a score to be calculated.</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span>                          </span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="fu">cut_attrs</span>(                    <span class="co"># Then take attributes with the highest rank.</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">2</span>                       <span class="co"># For example: 2 attrs with the higehst rank.</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span>                         </span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="fu">to_formula</span>(                   <span class="co"># Create a new formula object with </span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="at">attrs =</span> .,                  <span class="co"># the most influencial attrs.</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="at">class =</span> <span class="st">&quot;Species&quot;</span>           </span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="fu">glm</span>(</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="at">formula =</span> .,                <span class="co"># Use that formula in any classification algorithm.</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>    <span class="at">data =</span> iris,                </span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>    <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>         </span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>  )</span></code></pre></div>
 <pre><code>
 Call:  glm(formula = ., family = &quot;binomial&quot;, data = iris)
 
@@ -479,32 +491,32 @@ Residual Deviance: 5.17e-09     AIC: 6</code></pre>
 combinations of subsets of the specified attributes’ set, to score the
 currently considered subset, depending on the criterion passed with the
 <code>fun</code> parameter.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>evaluator_R2_lm <span class="ot">&lt;-</span>    <span class="co"># Create a scorer function.</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    attributes,       <span class="co"># That takes the currently considered subset of attributes</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    data,             <span class="co"># from a specified dataset.</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">dependent =</span> </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">names</span>(data)[<span class="dv">1</span>]  <span class="co"># To find features that best describe the dependent variable.</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  ) {</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(          <span class="co"># In this situation we take the r.squared statistic</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lm</span>(             <span class="co"># from the summary of a linear model object.</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">to_formula</span>(   <span class="co"># This is the score to use to choose between considered </span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>          attributes, <span class="co"># subsets of attributes.</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>          dependent</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        ),</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> data)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    )<span class="sc">$</span>r.squared</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="fu">feature_search</span>(          <span class="co"># feature_search work in 2 modes - &#39;exhaustive&#39; and &#39;greedy&#39;</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">attributes =</span> </span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(iris)[<span class="sc">-</span><span class="dv">1</span>],     <span class="co"># It takes attribues and creates combinations of it&#39;s subsets.</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> evaluator_R2_lm, <span class="co"># And it calculates the score of a subset that depends on the </span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> iris,           <span class="co"># evaluator function passed in the `fun` parameter.</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;exhaustive&quot;</span>,   <span class="co"># exhaustive - means to check all possible </span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">sizes =</span>                <span class="co"># attributes&#39; subset combinations </span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(attributes) <span class="co"># of sizes passed in sizes.</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>)<span class="sc">$</span>all</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>evaluator_R2_lm <span class="ot">&lt;-</span>    <span class="co"># Create a scorer function.</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="cf">function</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    attributes,       <span class="co"># That takes the currently considered subset of attributes</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    data,             <span class="co"># from a specified dataset.</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="at">dependent =</span> </span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>      <span class="fu">names</span>(data)[<span class="dv">1</span>]  <span class="co"># To find features that best describe the dependent variable.</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  ) {</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    <span class="fu">summary</span>(          <span class="co"># In this situation we take the r.squared statistic</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>      <span class="fu">lm</span>(             <span class="co"># from the summary of a linear model object.</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>        <span class="fu">to_formula</span>(   <span class="co"># This is the score to use to choose between considered </span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>          attributes, <span class="co"># subsets of attributes.</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>          dependent</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>        ),</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>        <span class="at">data =</span> data)</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>    )<span class="sc">$</span>r.squared</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  }</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="fu">feature_search</span>(          <span class="co"># feature_search work in 2 modes - &#39;exhaustive&#39; and &#39;greedy&#39;</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="at">attributes =</span> </span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>    <span class="fu">names</span>(iris)[<span class="sc">-</span><span class="dv">1</span>],     <span class="co"># It takes attribues and creates combinations of it&#39;s subsets.</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  <span class="at">fun =</span> evaluator_R2_lm, <span class="co"># And it calculates the score of a subset that depends on the </span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>  <span class="at">data =</span> iris,           <span class="co"># evaluator function passed in the `fun` parameter.</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;exhaustive&quot;</span>,   <span class="co"># exhaustive - means to check all possible </span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="at">sizes =</span>                <span class="co"># attributes&#39; subset combinations </span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(attributes) <span class="co"># of sizes passed in sizes.</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>)<span class="sc">$</span>all</span></code></pre></div>
 <pre><code>  Sepal.Width Petal.Length Petal.Width Species     values
 1           1            0           0       0 0.01382265
 2           0            1           0       0  0.7599546
@@ -514,8 +526,6 @@ currently considered subset, depending on the criterion passed with the
 <div id="use-cases" class="section level2">
 <h2>Use cases</h2>
 <ul>
-<li><a href="http://r-addict.com/2017/01/08/Entropy-Based-Image-Binarization.html">Entropy
-Based Image Binarization with imager and FSelectorRcpp</a></li>
 <li><a href="https://www.r-bloggers.com/2016/06/venn-diagram-comparison-of-boruta-fselectorrcpp-and-glmnet-algorithms/">Venn
 Diagram Comparison of Boruta, FSelectorRcpp and GLMnet
 Algorithms</a></li>
@@ -523,7 +533,7 @@ Algorithms</a></li>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-FedCSIS2013l106" class="csl-entry">
 Aziz, Amira Sayed A., Ahmad Taher Azar, Mostafa A. Salama, Aboul Ella
 Hassanien, and Sanaa El Ola Hanfy. 2013. <span>“Genetic Algorithms with
@@ -572,7 +582,7 @@ A</em> 37 (5): 742–54.
 </div>
 <div id="ref-geneticAlgo" class="csl-entry">
 Kuhn, Max, and Kjell Johnson. 2013. <span>“Applied Predictive
-Modeling.”</span> New York, NY: Springer. 2013. <a href="https://www.amazon.com/Applied-Predictive-Modeling-Max-Kuhn/dp/1461468485/">https://www.amazon.com/Applied-Predictive-Modeling-Max-Kuhn/dp/1461468485/</a>.
+Modeling.”</span> New York, NY: Springer. 2013.
 </div>
 <div id="ref-Boruta" class="csl-entry">
 Kursa, Miron B., and Witold R. Rudnicki. 2010. <span>“Feature Selection

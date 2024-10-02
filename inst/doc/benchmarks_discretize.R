@@ -1,4 +1,4 @@
-## ---- echo=FALSE, message=TRUE, results='asis'--------------------------------
+## ----echo=FALSE, message=TRUE, results='asis'---------------------------------
 is.pkg <- all(c("RTCGA.rnaseq", "microbenchmark", "RWeka", "pkgdown") %in% rownames(installed.packages()))
 if(!is.pkg) {
   message("Please install all suggested packages to run benchmark.")
@@ -40,17 +40,17 @@ if(is.pkg && !pkgdown::in_pkgdown()) {
 #      fig.path = fig.path
 #  )
 
-## ---- eval=is.pkg-------------------------------------------------------------
+## ----eval=is.pkg--------------------------------------------------------------
 #  library(microbenchmark)
 #  library(FSelectorRcpp)
 #  library(RWeka)
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  ## try https:// if https:// URLs are not supported
 #  source("https://bioconductor.org/biocLite.R")
 #  biocLite("RTCGA")
 
-## ---- eval=is.pkg-------------------------------------------------------------
+## ----eval=is.pkg--------------------------------------------------------------
 #  library(RTCGA.rnaseq)
 #  BRCA.rnaseq <- RTCGA.rnaseq::BRCA.rnaseq
 #  BRCA.rnaseq$bcr_patient_barcode <-
@@ -60,7 +60,7 @@ if(is.pkg && !pkgdown::in_pkgdown()) {
 #  names(BRCA.rnaseq) <- gsub(pattern = "[[:punct:]]", replacement = "_",
 #                             x = names(BRCA.rnaseq))
 
-## ---- eval=is.pkg-------------------------------------------------------------
+## ----eval=is.pkg--------------------------------------------------------------
 #  library(ggplot2)
 #  library(pbapply)
 #  library(tibble)

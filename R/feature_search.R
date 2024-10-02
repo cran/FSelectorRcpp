@@ -115,7 +115,7 @@ greedy_search <- function(attributes, fun, data,
 #' @param sizes Used when \code{mode = "exhaustive"} - a vector of sizes
 #' of attributes subsets.
 #' @param parallel Allow parallelization.
-#' @param \dots Other arguments passed to \link{foreach} function.
+#' @param \dots Other arguments passed to \link[foreach]{foreach} function.
 #'
 #' @author Zygmunt Zawadzki \email{zygmunt@zstat.pl}
 #' @author Krzysztof Slomczynski \email{krzysztofslomczynski@@gmail.com}
@@ -156,6 +156,7 @@ greedy_search <- function(attributes, fun, data,
 #' # stopCluster(cl) #nolint
 #' # registerDoSEQ() #nolint
 #'
+#' if(require("rpart")) {
 #' # 1) Evaluator from FSelector package.
 #' evaluator <- function(subset, data, dependent = names(iris)[5]) {
 #'   library(rpart)
@@ -202,6 +203,7 @@ greedy_search <- function(attributes, fun, data,
 #'                  mode = "exhaustive",
 #'                  parallel = FALSE)
 #' )
+#' }
 #'
 #' # 2) Maximize R^2 statistics in the linear regression model/problem.
 #'
@@ -218,7 +220,7 @@ greedy_search <- function(attributes, fun, data,
 #' # 3) Optimize BIC crietion in generalized linear model.
 #' # Aim of Bayesian approach it to identify the model with the highest
 #' # probability of being the true model. - Kuha 2004
-#'
+#' if(require("MASS")) {
 #' utils::data(anorexia, package = "MASS")
 #'
 #' evaluator_BIC_glm <- function(attributes, data, dependent = "Postwt") {
@@ -233,7 +235,7 @@ greedy_search <- function(attributes, fun, data,
 #'                fun = evaluator_BIC_glm,
 #'                data = anorexia,
 #'                mode = "exhaustive")
-#'
+#' }
 #' # Close parallelization
 #' \dontrun{
 #' stopCluster(cl)

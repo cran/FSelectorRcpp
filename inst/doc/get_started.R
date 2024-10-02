@@ -13,7 +13,7 @@ opts_chunk$set(
     eval = TRUE
 )
 
-## ---- eval=FALSE------------------------------------------------------------------------------------------------------------------------------------
+## ----eval=FALSE-------------------------------------------------------------------------------------------------------------------------------------
 #  install.packages('FSelectorRcpp') # stable release version on CRAN
 #  devtools::install_github('mi2-warsaw/FSelectorRcpp') # dev version
 #  # windows users should have Rtools for devtools installation

@@ -19,7 +19,7 @@ formula2names <- function(formula, data) {
 #' @param class Single string with a dependent variable's name.
 #'
 #' @examples
-#'
+#' if(require("rpart")) {
 #' # evaluator from FSelector package
 #' evaluator <- function(subset, data, dependent = names(iris)[5]) {
 #'   library(rpart)
@@ -45,7 +45,7 @@ formula2names <- function(formula, data) {
 #' names(fit$best)[fit$best == 1]
 #' # with to_formula
 #' to_formula(names(fit$best)[fit$best == 1], "Species")
-#'
+#' }
 #' @importFrom stats as.formula
 #' @export
 to_formula <- function(attrs, class) {
